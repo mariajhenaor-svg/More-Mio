@@ -2,7 +2,6 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 
 module.exports = async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,17 +12,20 @@ module.exports = async function handler(req, res) {
   try {
     const pedido = req.body;
 
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY
-      ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n')
-      : '';
+    // Fix private key: handle both \n and actual newlines
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    const privateKey = rawKey.replace(/\\n/g, '\n').replace(/\n/g, '\n');
+
+    // Fix sheet ID: trim any spaces
+    const sheetId = (process.env.GOOGLE_SHEET_ID || '').trim();
 
     const serviceAccountAuth = new JWT({
-      email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      email: (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '').trim(),
       key: privateKey,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
-    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
+    const doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
 
@@ -49,7 +51,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
   } catch (error) {
-    console.error('Error guardando en Sheets:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('Error:', error);
+    return res.status(500).json({ error: error.message, stack: error.stack });
   }
 };
