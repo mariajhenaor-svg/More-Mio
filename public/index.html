@@ -151,7 +151,7 @@
     <button class="nav-btn" onclick="showScreen('recetas',this)"><i class="ti ti-book"></i>Recetas</button>
     <button class="nav-btn" onclick="showScreen('cocinar',this)"><i class="ti ti-chef-hat"></i>Cocinar</button>
     <button class="nav-btn" onclick="showScreen('catalogo',this)"><i class="ti ti-storefront"></i>Catálogo</button>
-    <button class="nav-btn" onclick="openModal('editar-precios')"><i class="ti ti-tag"></i>Precios</button>
+    <button class="nav-btn admin-only" onclick="openModal('editar-precios')" style="display:none;"><i class="ti ti-tag"></i>Precios</button>
   </nav>
 
   <!-- PEDIDOS -->
@@ -333,51 +333,44 @@ const RECETAS_DEFAULT = [
   { producto:'Rice crispy', base:12, ingredientes:[{nombre:'Arroz inflado',cantidad:180,unidad:'g'},{nombre:'Mantequilla',cantidad:45,unidad:'g'},{nombre:'Malvaviscos',cantidad:300,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'}] }
 ];
 
-// Precios por producto — edítalos desde la herramienta de precios en la app
-let PRECIO_UNIT = JSON.parse(localStorage.getItem('mm_precios') || JSON.stringify({
-  'Brownie milo': 0,
-  'Brownie stevia': 0,
-  'Alfajores arequipe': 0,
-  'Alfajores milo': 0,
-  'Galleta de Milo': 0,
-  'Mini cookies chocochips': 0,
-  'Rice crispy': 0,
-  'Caja Mixta de Alfajores': 0
-}));
+// Paquetes por producto con sus precios editables
+const PAQUETES_CONFIG = {
+  'Brownie milo':          [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Brownie stevia':        [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Alfajores arequipe':    [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Alfajores milo':        [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Galleta de Milo':       [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Mini cookies chocochips':[{label:'25 unidades',qty:25},{label:'50 unidades',qty:50}],
+  'Rice crispy':           [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12}],
+  'Caja Mixta de Alfajores':[{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}]
+};
 
-function guardarPrecios() { localStorage.setItem('mm_precios', JSON.stringify(PRECIO_UNIT)); }
+// Precios editables: producto -> label -> precio
+const PRECIOS_DEFAULT = {};
+Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
+  PRECIOS_DEFAULT[prod] = {};
+  packs.forEach(p => { PRECIOS_DEFAULT[prod][p.label] = 0; });
+});
 
-// Opciones de cantidad estándar
-const CANTIDADES = [
-  {label:'6 unidades', qty:6, unit:'und'},
-  {label:'12 unidades', qty:12, unit:'und'},
-  {label:'24 unidades', qty:24, unit:'und'}
-];
+let PRECIOS_MAP = JSON.parse(localStorage.getItem('mm_precios_v2') || JSON.stringify(PRECIOS_DEFAULT));
 
-// Cantidades especiales para Mini cookies y Rice crispy
-const CANTIDADES_COOKIES = [
-  {label:'25 unidades', qty:25, unit:'und'},
-  {label:'50 unidades', qty:50, unit:'und'}
-];
+function guardarPrecios() { localStorage.setItem('mm_precios_v2', JSON.stringify(PRECIOS_MAP)); }
 
-const CANTIDADES_RICE = [
-  {label:'6 unidades', qty:6, unit:'und'},
-  {label:'12 unidades', qty:12, unit:'und'}
-];
+function getPrecioPaquete(producto, label) {
+  return (PRECIOS_MAP[producto] && PRECIOS_MAP[producto][label]) || 0;
+}
 
-// Extras para Mini cookies
+// Opciones de cantidad (se generan desde PAQUETES_CONFIG)
+const CANTIDADES = [{label:'6 unidades',qty:6,unit:'und'},{label:'12 unidades',qty:12,unit:'und'},{label:'24 unidades',qty:24,unit:'und'}];
+const CANTIDADES_COOKIES = [{label:'25 unidades',qty:25,unit:'und'},{label:'50 unidades',qty:50,unit:'und'}];
+const CANTIDADES_RICE = [{label:'6 unidades',qty:6,unit:'und'},{label:'12 unidades',qty:12,unit:'und'}];
+
+// Extras y sabores
 const EXTRAS_COOKIES = ['Sin extra', 'Salsa de Milo', 'Salsa de Arequipe'];
-
-// Sabores Rice crispy
 const SABORES_RICE = ['Clásico', 'Chocolate'];
-
-// Sabores Alfajores mixtos
 const SABORES_ALFAJOR = ['Arequipe', 'Milo', 'Chips chocolate'];
 
-function getPrecioOpcion(producto, qty) {
-  const precioUnit = PRECIO_UNIT[producto] || 0;
-  return precioUnit * qty;
-}
+function getPrecioOpcion(producto, qty) { return 0; } // legacy compat
 
 const CATALOGO_INFO = {
   'Brownie milo': { desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
@@ -449,25 +442,32 @@ function openModal(id) {
 }
 
 function initPrecioEditor() {
-  const prods = Object.keys(PRECIO_UNIT);
   const cont = document.getElementById('precio-editor-rows');
-  cont.innerHTML = prods.map(p => `
-    <div class="form-group">
-      <label class="form-label">${p}</label>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-family:'Space Mono',monospace;font-size:13px;color:var(--mm-muted);">$</span>
-        <input class="form-input" type="number" inputmode="numeric" placeholder="0"
-          value="${PRECIO_UNIT[p]||''}" data-prod="${p}"
-          style="flex:1;">
-      </div>
+  cont.innerHTML = Object.entries(PAQUETES_CONFIG).map(([prod, packs]) => `
+    <div style="background:white;border:0.5px solid var(--mm-border);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+      <div style="font-weight:500;font-size:14px;color:var(--mm-vino);margin-bottom:10px;">${prod}</div>
+      ${packs.map(pk => {
+        const val = getPrecioPaquete(prod, pk.label) || '';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:13px;color:var(--mm-muted);flex:1;">${pk.label}</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--mm-muted);">$</span>
+            <input class="form-input" type="number" inputmode="numeric" placeholder="0"
+              value="${val}" data-prod="${prod}" data-label="${pk.label}"
+              style="width:100px;padding:7px 10px;font-size:14px;text-align:right;">
+          </div>
+        </div>`;
+      }).join('')}
     </div>`).join('');
 }
 
 function guardarPreciosModal() {
   document.querySelectorAll('#precio-editor-rows input').forEach(inp => {
     const prod = inp.dataset.prod;
+    const label = inp.dataset.label;
     const val = parseInt(inp.value) || 0;
-    PRECIO_UNIT[prod] = val;
+    if (!PRECIOS_MAP[prod]) PRECIOS_MAP[prod] = {};
+    PRECIOS_MAP[prod][label] = val;
   });
   guardarPrecios();
   closeModal('editar-precios');
@@ -557,10 +557,10 @@ function renderCatalogo() {
         opcionesHtml = saboresRiceHtml;
       } else {
         opcionesHtml = (p.nombre === 'Mini cookies chocochips' ? extrasHtml : '') + cantSet.map(op => {
-          const precio = getPrecioOpcion(p.nombre, op.qty);
+          const precio = getPrecioPaquete(p.nombre, op.label);
           const key = p.nombre + '||' + op.label;
           const qty = catCarrito[key]?.qty || 0;
-          const precioStr = precio > 0 ? '$'+precio.toLocaleString('es-CO') : 'Consultar';
+          const precioStr = precio > 0 ? '$'+precio.toLocaleString('es-CO') : 'Consultar precio';
           return `<div class="cat-price-row">
             <span class="cat-price-label">${op.label}</span>
             <span class="cat-price-amount">${precioStr}</span>
@@ -905,6 +905,20 @@ function renderCocinar() {
   cont.innerHTML=totalHtml+`<p class="section-title">pedidos activos (${activos.length})</p>${activos.map(p=>`<div style="background:var(--mm-card);border:0.5px solid var(--mm-border);border-radius:12px;padding:12px 14px;margin-bottom:9px;"><div style="font-weight:500;font-size:14px;margin-bottom:3px;">${p.cliente}</div><div style="font-size:12px;color:var(--mm-muted);margin-bottom:8px;">${p.items.map(it=>it.qty+' '+(it.unit||'')+' '+it.prod).join(' · ')||'Sin productos'}</div><span class="badge ${ESTADOS[p.estado].cls}">${ESTADOS[p.estado].label}</span></div>`).join('')}`;
 }
 function addToCalendar(){const cliente=document.getElementById('np-cliente').value.trim()||'Pedido';const fecha=document.getElementById('np-fecha').value;if(!fecha){alert('Pon la fecha de entrega primero');return;}const d=fecha.replace(/-/g,'');window.open(`https://calendar.google.com/calendar/event?action=TEMPLATE&dates=${d}/${d}&text=${encodeURIComponent('More Mío · '+cliente)}&details=${encodeURIComponent('Pedido para '+cliente)}`,'_blank');}
+
+// Modo admin: solo si la URL tiene ?admin o si está en modo normal (no /catalogo)
+const esAdmin = !window.location.pathname.includes('catalogo') && 
+                (window.location.search.includes('admin') || 
+                 !window.location.pathname.includes('catalogo'));
+if (esAdmin) {
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+  // Mostrar todas las pestañas admin
+  document.querySelectorAll('.nav-btn:not(.admin-only)').forEach(el => el.style.display = 'flex');
+} else {
+  // Solo mostrar catálogo
+  document.querySelectorAll('.nav-btn').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('#screen-catalogo').forEach(el => el.classList.add('active'));
+}
 
 renderPedidos();
 renderRecetas();
