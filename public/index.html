@@ -32,8 +32,8 @@
   .header-logo { font-family: 'Grand Hotel', cursive; font-size: 34px; color: var(--mm-crema); line-height: 1; }
   .header-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--mm-oro); letter-spacing: 2px; margin-top: 2px; text-transform: uppercase; }
   .nav { display: flex; background: var(--mm-vino); border-top: 0.5px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 5; }
-  .nav-btn { flex: 1; padding: 10px 4px 8px; font-family: 'Jost', sans-serif; font-size: 11px; color: rgba(251,243,222,0.55); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .nav-btn i { font-size: 20px; }
+  .nav-btn { flex: 1; padding: 10px 4px 8px; font-family: 'Jost', sans-serif; font-size: 10px; color: rgba(251,243,222,0.55); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .nav-btn i { font-size: 19px; }
   .nav-btn.active { color: var(--mm-crema); border-bottom-color: var(--mm-oro); }
   .screen { display: none; padding: 16px; flex: 1; }
   .screen.active { display: block; }
@@ -53,6 +53,7 @@
   .badge-estado-2 { background: #E1F5EE; color: #085041; }
   .badge-estado-3 { background: #EAF3DE; color: #27500A; }
   .badge-pago { background: #f1efe8; color: #444441; }
+  .badge-cliente { background: #e8eef8; color: #1a3a6b; }
   .saldo-chip { margin-left: auto; font-family: 'Space Mono', monospace; font-size: 11px; }
   .saldo-ok { color: #27500A; }
   .saldo-pend { color: #A32D2D; font-weight: 500; }
@@ -101,7 +102,42 @@
   .modal-handle { width: 36px; height: 4px; background: var(--mm-border); border-radius: 2px; margin: 0 auto 16px; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--mm-vino); color: var(--mm-crema); padding: 10px 20px; border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 12px; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; }
-  .divider { border: none; border-top: 0.5px solid var(--mm-border); margin: 14px 0; }
+
+  /* ===== CATALOGO CLIENTE ===== */
+  .catalogo-hero { background: var(--mm-vino); border-radius: 14px; padding: 20px 16px; text-align: center; margin-bottom: 16px; }
+  .catalogo-hero-title { font-family: 'Grand Hotel', cursive; font-size: 28px; color: var(--mm-crema); }
+  .catalogo-hero-sub { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--mm-oro); letter-spacing: 2px; margin-top: 4px; }
+  .cat-product-card { background: var(--mm-card); border: 0.5px solid var(--mm-border); border-radius: 16px; margin-bottom: 14px; overflow: hidden; }
+  .cat-product-img { width: 100%; height: 180px; object-fit: cover; background: var(--mm-crema); display: flex; align-items: center; justify-content: center; }
+  .cat-product-img-placeholder { width: 100%; height: 180px; background: linear-gradient(135deg, #f5e6c8 0%, #ecdbb0 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--mm-oro); }
+  .cat-product-img-placeholder i { font-size: 48px; margin-bottom: 6px; }
+  .cat-product-img-placeholder span { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--mm-muted); }
+  .cat-product-img img { width: 100%; height: 180px; object-fit: cover; }
+  .cat-product-body { padding: 14px; }
+  .cat-product-name { font-family: 'Grand Hotel', cursive; font-size: 22px; color: var(--mm-vino); margin-bottom: 4px; }
+  .cat-product-desc { font-size: 13px; color: var(--mm-muted); margin-bottom: 12px; line-height: 1.5; }
+  .cat-price-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--mm-border); }
+  .cat-price-row:last-of-type { border-bottom: none; }
+  .cat-price-label { font-size: 13px; color: var(--mm-text); flex: 1; }
+  .cat-price-amount { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--mm-oro); margin-right: 10px; font-weight: 500; }
+  .cat-qty-wrap { display: flex; align-items: center; gap: 6px; }
+  .cat-qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 0.5px solid var(--mm-frambuesa); background: white; color: var(--mm-frambuesa); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 500; }
+  .cat-qty-num { font-family: 'Space Mono', monospace; font-size: 14px; min-width: 20px; text-align: center; }
+  .cat-cart-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: var(--mm-vino); padding: 12px 16px 28px; z-index: 10; display: none; }
+  .cat-cart-bar.visible { display: block; }
+  .cat-cart-btn { width: 100%; padding: 14px; background: var(--mm-frambuesa); color: var(--mm-crema); border: none; border-radius: 12px; font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .cat-cart-total { font-family: 'Space Mono', monospace; font-size: 13px; }
+  .cat-resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--mm-border); font-size: 14px; }
+  .cat-resumen-total { display: flex; justify-content: space-between; padding: 12px 0 0; font-size: 15px; font-weight: 500; color: var(--mm-vino); }
+  .pago-opt { display: flex; align-items: center; gap: 10px; padding: 12px; border: 0.5px solid var(--mm-border); border-radius: 10px; cursor: pointer; margin-bottom: 8px; background: white; }
+  .pago-opt.sel { border-color: var(--mm-frambuesa); background: #fbeaf0; }
+  .pago-opt-icon { font-size: 22px; }
+  .pago-opt-label { font-size: 14px; font-weight: 500; }
+  .pago-opt-sub { font-size: 11px; color: var(--mm-muted); font-family: 'Space Mono', monospace; }
+  .success-box { text-align: center; padding: 32px 16px; }
+  .success-box i { font-size: 56px; color: var(--mm-oro); display: block; margin-bottom: 12px; }
+  .success-box h2 { font-family: 'Grand Hotel', cursive; font-size: 30px; color: var(--mm-vino); margin-bottom: 8px; }
+  .success-box p { font-size: 14px; color: var(--mm-muted); line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -113,55 +149,56 @@
   <nav class="nav">
     <button class="nav-btn active" onclick="showScreen('pedidos',this)"><i class="ti ti-shopping-bag"></i>Pedidos</button>
     <button class="nav-btn" onclick="showScreen('recetas',this)"><i class="ti ti-book"></i>Recetas</button>
-    <button class="nav-btn" onclick="showScreen('cocinar',this)"><i class="ti ti-chef-hat"></i>Cocinar hoy</button>
+    <button class="nav-btn" onclick="showScreen('cocinar',this)"><i class="ti ti-chef-hat"></i>Cocinar</button>
+    <button class="nav-btn" onclick="showScreen('catalogo',this)"><i class="ti ti-storefront"></i>Catálogo</button>
   </nav>
 
+  <!-- PEDIDOS -->
   <div id="screen-pedidos" class="screen active">
     <button class="fab" onclick="openModal('nuevo-pedido')"><i class="ti ti-plus"></i> Nuevo pedido</button>
     <div id="lista-pedidos"><div class="no-pedidos"><i class="ti ti-cake"></i>Aún no hay pedidos.<br>¡Agrega el primero!</div></div>
   </div>
 
+  <!-- RECETAS -->
   <div id="screen-recetas" class="screen">
     <p class="section-title">mis recetas</p>
     <div id="lista-recetas"></div>
     <button class="btn-secondary" onclick="openModal('nueva-receta')"><i class="ti ti-plus"></i> Agregar receta</button>
   </div>
 
+  <!-- COCINAR HOY -->
   <div id="screen-cocinar" class="screen">
     <p class="section-title">resumen del día</p>
     <div id="resumen-cocinar"><div class="no-pedidos"><i class="ti ti-mood-smile"></i>No hay pedidos pendientes.</div></div>
   </div>
 
-  <!-- MODAL NUEVO PEDIDO -->
+  <!-- CATÁLOGO CLIENTE -->
+  <div id="screen-catalogo" class="screen" style="padding-bottom: 100px;">
+    <div class="catalogo-hero">
+      <div class="catalogo-hero-title">More Mío</div>
+      <div class="catalogo-hero-sub">repostería artesanal · cali</div>
+    </div>
+    <div id="cat-productos"></div>
+    <div class="cat-cart-bar" id="cat-cart-bar">
+      <button class="cat-cart-btn" onclick="openModal('cat-checkout')">
+        <span id="cat-cart-label">Ver pedido</span>
+        <span class="cat-cart-total" id="cat-cart-total-bar">$0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVO PEDIDO (admin) -->
   <div class="modal-overlay" id="modal-nuevo-pedido">
     <div class="modal-box">
       <div class="modal-handle"></div>
       <div class="modal-title">Nuevo pedido <button class="close-btn" onclick="closeModal('nuevo-pedido')">×</button></div>
-      <div class="form-group">
-        <label class="form-label">cliente</label>
-        <input class="form-input" id="np-cliente" placeholder="Nombre del cliente" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">dirección de envío</label>
-        <input class="form-input" id="np-dir" placeholder="Barrio o dirección" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">nota de entrega</label>
-        <input class="form-input" id="np-nota" placeholder="Ej: llamar antes de llegar" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">fecha de entrega</label>
-        <input class="form-input" id="np-fecha" type="date">
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="margin-bottom:10px;">productos y cantidades</label>
-        <div id="np-productos"></div>
-      </div>
-      <div class="total-auto-box" id="np-total-auto" style="display:none;">
-        Total estimado: <span id="np-total-valor">$0</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="margin-bottom:10px;">estado de producción</label>
+      <div class="form-group"><label class="form-label">cliente</label><input class="form-input" id="np-cliente" placeholder="Nombre del cliente" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">dirección de envío</label><input class="form-input" id="np-dir" placeholder="Barrio o dirección" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">nota de entrega</label><input class="form-input" id="np-nota" placeholder="Ej: llamar antes de llegar" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">fecha de entrega</label><input class="form-input" id="np-fecha" type="date"></div>
+      <div class="form-group"><label class="form-label" style="margin-bottom:10px;">productos y cantidades</label><div id="np-productos"></div></div>
+      <div class="total-auto-box" id="np-total-auto" style="display:none;">Total estimado: <span id="np-total-valor">$0</span></div>
+      <div class="form-group"><label class="form-label" style="margin-bottom:10px;">estado de producción</label>
         <div class="estado-selector" id="np-estado">
           <span class="estado-opt sel" data-val="0">Pendiente comprar</span>
           <span class="estado-opt" data-val="1">Hacer de cero</span>
@@ -170,25 +207,18 @@
         </div>
       </div>
       <div class="row2">
-        <div class="form-group">
-          <label class="form-label">total ($)</label>
-          <input class="form-input" id="np-total" type="number" placeholder="0" inputmode="numeric" oninput="calcSaldo()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">abono ($)</label>
-          <input class="form-input" id="np-abono" type="number" placeholder="0" inputmode="numeric" oninput="calcSaldo()">
-        </div>
+        <div class="form-group"><label class="form-label">total ($)</label><input class="form-input" id="np-total" type="number" placeholder="0" inputmode="numeric" oninput="calcSaldo()"></div>
+        <div class="form-group"><label class="form-label">abono ($)</label><input class="form-input" id="np-abono" type="number" placeholder="0" inputmode="numeric" oninput="calcSaldo()"></div>
       </div>
       <div class="saldo-preview" id="np-saldo-preview" style="background:#fbeaf0;color:#72243E;">Saldo pendiente: $0</div>
-      <div class="form-group">
-        <label class="form-label" style="margin-bottom:10px;">forma de pago</label>
+      <div class="form-group"><label class="form-label" style="margin-bottom:10px;">forma de pago</label>
         <div class="estado-selector" id="np-pago">
           <span class="estado-opt sel" data-val="efectivo">Efectivo</span>
           <span class="estado-opt" data-val="nequi">Nequi</span>
           <span class="estado-opt" data-val="transferencia">Transferencia</span>
         </div>
       </div>
-      <button class="cal-btn" onclick="addToCalendar()"><i class="ti ti-calendar" style="font-size:17px;"></i> Agregar al Calendario de iPhone</button>
+      <button class="cal-btn" onclick="addToCalendar()"><i class="ti ti-calendar" style="font-size:17px;"></i> Agregar al Calendario</button>
       <button class="btn-primary" onclick="guardarPedido()">Guardar pedido</button>
     </div>
   </div>
@@ -198,33 +228,15 @@
     <div class="modal-box">
       <div class="modal-handle"></div>
       <div class="modal-title">Nueva receta <button class="close-btn" onclick="closeModal('nueva-receta')">×</button></div>
-      <div class="form-group">
-        <label class="form-label">producto</label>
+      <div class="form-group"><label class="form-label">producto</label>
         <select class="form-select" id="nr-producto" onchange="toggleNuevoProducto()">
-          <option>Brownie milo</option>
-          <option>Brownie stevia</option>
-          <option>Alfajores arequipe</option>
-          <option>Alfajores milo</option>
-          <option value="__nuevo__">+ Nuevo producto</option>
+          <option>Brownie milo</option><option>Brownie stevia</option><option>Alfajores arequipe</option><option>Alfajores milo</option><option value="__nuevo__">+ Nuevo producto</option>
         </select>
       </div>
-      <div class="form-group" id="nr-nuevo-wrap" style="display:none;">
-        <label class="form-label">nombre del nuevo producto</label>
-        <input class="form-input" id="nr-nuevo-nombre" placeholder="Ej: Galletas de avena" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">rinde (unidades base)</label>
-        <input class="form-input" id="nr-base" type="number" placeholder="Ej: 24" value="24" inputmode="numeric">
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="margin-bottom:10px;">ingredientes</label>
-        <div id="nr-ingredientes">
-          <div class="ing-row">
-            <input class="ing-name-input" placeholder="Ingrediente">
-            <input class="ing-amount" placeholder="100" type="number" inputmode="decimal">
-            <select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select>
-          </div>
-        </div>
+      <div class="form-group" id="nr-nuevo-wrap" style="display:none;"><label class="form-label">nombre del nuevo producto</label><input class="form-input" id="nr-nuevo-nombre" placeholder="Ej: Galletas de avena" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">rinde (unidades base)</label><input class="form-input" id="nr-base" type="number" placeholder="Ej: 24" value="24" inputmode="numeric"></div>
+      <div class="form-group"><label class="form-label" style="margin-bottom:10px;">ingredientes</label>
+        <div id="nr-ingredientes"><div class="ing-row"><input class="ing-name-input" placeholder="Ingrediente"><input class="ing-amount" placeholder="100" type="number" inputmode="decimal"><select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select></div></div>
         <button class="btn-add-ing" onclick="addIngrediente()">+ ingrediente</button>
       </div>
       <button class="btn-primary" onclick="guardarReceta()">Guardar receta</button>
@@ -236,8 +248,7 @@
     <div class="modal-box">
       <div class="modal-handle"></div>
       <div class="modal-title">Actualizar estado <button class="close-btn" onclick="closeModal('edit-estado')">×</button></div>
-      <div class="form-group">
-        <label class="form-label" style="margin-bottom:10px;">estado de producción</label>
+      <div class="form-group"><label class="form-label" style="margin-bottom:10px;">estado de producción</label>
         <div class="estado-selector" id="ee-estado">
           <span class="estado-opt" data-val="0">Pendiente comprar</span>
           <span class="estado-opt" data-val="1">Hacer de cero</span>
@@ -250,120 +261,92 @@
     </div>
   </div>
 
+  <!-- MODAL CHECKOUT CLIENTE -->
+  <div class="modal-overlay" id="modal-cat-checkout">
+    <div class="modal-box">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Tu pedido <button class="close-btn" onclick="closeModal('cat-checkout')">×</button></div>
+      <div id="cat-checkout-content">
+        <!-- PASO 1: Resumen -->
+        <div id="cat-paso-1">
+          <p class="section-title">resumen</p>
+          <div id="cat-resumen-items"></div>
+          <div class="cat-resumen-total"><span>Total</span><span id="cat-resumen-total-val">$0</span></div>
+          <hr style="border:none;border-top:0.5px solid var(--mm-border);margin:16px 0;">
+          <p class="section-title">tus datos</p>
+          <div class="form-group"><label class="form-label">nombre completo</label><input class="form-input" id="cat-nombre" placeholder="¿Cómo te llamas?" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">teléfono / WhatsApp</label><input class="form-input" id="cat-tel" placeholder="300 000 0000" type="tel" inputmode="numeric"></div>
+          <div class="form-group"><label class="form-label">dirección de entrega</label><input class="form-input" id="cat-dir" placeholder="Barrio, calle, número..." autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">nota adicional</label><input class="form-input" id="cat-nota" placeholder="Ej: sin azúcar extra, ocasión especial..." autocomplete="off"></div>
+          <hr style="border:none;border-top:0.5px solid var(--mm-border);margin:16px 0;">
+          <p class="section-title">método de pago</p>
+          <div class="pago-opt sel" data-pago="efectivo" onclick="selPago(this)">
+            <span class="pago-opt-icon">💵</span>
+            <div><div class="pago-opt-label">Efectivo</div><div class="pago-opt-sub">Al momento de la entrega</div></div>
+          </div>
+          <div class="pago-opt" data-pago="nequi" onclick="selPago(this)">
+            <span class="pago-opt-icon">📱</span>
+            <div><div class="pago-opt-label">Nequi</div><div class="pago-opt-sub">Te enviamos el número al confirmar</div></div>
+          </div>
+          <div class="pago-opt" data-pago="transferencia" onclick="selPago(this)">
+            <span class="pago-opt-icon">🏦</span>
+            <div><div class="pago-opt-label">Transferencia</div><div class="pago-opt-sub">Datos bancarios al confirmar</div></div>
+          </div>
+          <button class="btn-primary" style="margin-top:16px;" onclick="enviarPedidoCliente()">Enviar pedido</button>
+        </div>
+        <!-- PASO 2: Confirmación -->
+        <div id="cat-paso-2" style="display:none;">
+          <div class="success-box">
+            <i class="ti ti-circle-check"></i>
+            <h2>¡Pedido recibido!</h2>
+            <p>Gracias por tu pedido.<br>More Mío se pondrá en contacto contigo pronto para confirmar los detalles. 🎂</p>
+          </div>
+          <button class="btn-secondary" onclick="resetCatalogo()">Hacer otro pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 </div>
 
 <script>
-// ===== DATOS PRECARGADOS =====
 const RECETAS_DEFAULT = [
-  {
-    producto: 'Brownie milo',
-    base: 24,
-    ingredientes: [
-      {nombre:'Harina de trigo', cantidad:115, unidad:'g'},
-      {nombre:'Milo', cantidad:100, unidad:'g'},
-      {nombre:'Mantequilla', cantidad:100, unidad:'g'},
-      {nombre:'Azúcar morena', cantidad:90, unidad:'g'},
-      {nombre:'Azúcar blanca', cantidad:95, unidad:'g'},
-      {nombre:'Huevos', cantidad:2, unidad:'und'},
-      {nombre:'Sal', cantidad:5, unidad:'g'},
-      {nombre:'Esencia de vainilla', cantidad:1, unidad:'ml'},
-      {nombre:'Polvo de hornear', cantidad:2.5, unidad:'g'}
-    ]
-  },
-  {
-    producto: 'Brownie stevia',
-    base: 24,
-    ingredientes: [
-      {nombre:'Harina de avena', cantidad:50, unidad:'g'},
-      {nombre:'Harina de almendra', cantidad:50, unidad:'g'},
-      {nombre:'Cacao en polvo', cantidad:40, unidad:'g'},
-      {nombre:'Stevia', cantidad:110, unidad:'g'},
-      {nombre:'Huevos', cantidad:4, unidad:'und'},
-      {nombre:'Aceite de coco', cantidad:95, unidad:'ml'},
-      {nombre:'Polvo de hornear', cantidad:5, unidad:'g'},
-      {nombre:'Esencia de vainilla', cantidad:4, unidad:'ml'},
-      {nombre:'Sal', cantidad:1, unidad:'pizca'}
-    ]
-  },
-  {
-    producto: 'Alfajores arequipe',
-    base: 24,
-    ingredientes: [
-      {nombre:'Harina de trigo', cantidad:150, unidad:'g'},
-      {nombre:'Maicena', cantidad:200, unidad:'g'},
-      {nombre:'Azúcar pulverizada', cantidad:80, unidad:'g'},
-      {nombre:'Mantequilla fría', cantidad:150, unidad:'g'},
-      {nombre:'Yemas de huevo', cantidad:2, unidad:'und'},
-      {nombre:'Esencia de vainilla', cantidad:5, unidad:'ml'},
-      {nombre:'Polvo de hornear', cantidad:4, unidad:'g'},
-      {nombre:'Sal', cantidad:1, unidad:'pizca'},
-      {nombre:'Arequipe (relleno)', cantidad:1, unidad:'und'}
-    ]
-  },
-  {
-    producto: 'Alfajores milo',
-    base: 24,
-    ingredientes: [
-      {nombre:'Harina de trigo', cantidad:200, unidad:'g'},
-      {nombre:'Maicena', cantidad:150, unidad:'g'},
-      {nombre:'Milo en polvo', cantidad:60, unidad:'g'},
-      {nombre:'Azúcar pulverizada', cantidad:80, unidad:'g'},
-      {nombre:'Mantequilla fría', cantidad:150, unidad:'g'},
-      {nombre:'Yemas de huevo', cantidad:3, unidad:'und'},
-      {nombre:'Esencia de vainilla', cantidad:5, unidad:'ml'},
-      {nombre:'Polvo de hornear', cantidad:5, unidad:'g'},
-      {nombre:'Sal', cantidad:1, unidad:'pizca'},
-      {nombre:'Milo untable (relleno)', cantidad:1, unidad:'und'}
-    ]
-  }
+  { producto:'Brownie milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:115,unidad:'g'},{nombre:'Milo',cantidad:100,unidad:'g'},{nombre:'Mantequilla',cantidad:100,unidad:'g'},{nombre:'Azúcar morena',cantidad:90,unidad:'g'},{nombre:'Azúcar blanca',cantidad:95,unidad:'g'},{nombre:'Huevos',cantidad:2,unidad:'und'},{nombre:'Sal',cantidad:5,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:1,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:2.5,unidad:'g'}] },
+  { producto:'Brownie stevia', base:24, ingredientes:[{nombre:'Harina de avena',cantidad:50,unidad:'g'},{nombre:'Harina de almendra',cantidad:50,unidad:'g'},{nombre:'Cacao en polvo',cantidad:40,unidad:'g'},{nombre:'Stevia',cantidad:110,unidad:'g'},{nombre:'Huevos',cantidad:4,unidad:'und'},{nombre:'Aceite de coco',cantidad:95,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:4,unidad:'ml'},{nombre:'Sal',cantidad:1,unidad:'pizca'}] },
+  { producto:'Alfajores arequipe', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:150,unidad:'g'},{nombre:'Maicena',cantidad:200,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:2,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:4,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Arequipe (relleno)',cantidad:1,unidad:'und'}] },
+  { producto:'Alfajores milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:200,unidad:'g'},{nombre:'Maicena',cantidad:150,unidad:'g'},{nombre:'Milo en polvo',cantidad:60,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:3,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Milo untable (relleno)',cantidad:1,unidad:'und'}] }
 ];
 
-// ===== PRECIOS =====
-// Estructura: producto -> opciones de precio [{label, qty, unit, precio}]
 const PRECIOS = {
-  'Brownie milo': [
-    {label:'Unidad', qty:1, unit:'und', precio:1500},
-    {label:'Paquete x12', qty:12, unit:'paq', precio:15000},
-    {label:'Paquete x24', qty:24, unit:'paq', precio:27000}
-  ],
-  'Brownie stevia': [
-    {label:'Unidad', qty:1, unit:'und', precio:2000},
-    {label:'Paquete x12', qty:12, unit:'paq', precio:22000},
-    {label:'Paquete x24', qty:24, unit:'paq', precio:48000}
-  ],
-  'Alfajores arequipe': [
-    {label:'Unidad', qty:1, unit:'und', precio:1200},
-    {label:'Caja x12', qty:12, unit:'caja', precio:14000},
-    {label:'Caja x24', qty:24, unit:'caja', precio:27000}
-  ],
-  'Alfajores milo': [
-    {label:'Unidad', qty:1, unit:'und', precio:1500},
-    {label:'Caja x12', qty:12, unit:'caja', precio:17000},
-    {label:'Caja x24', qty:24, unit:'caja', precio:31000}
-  ],
-  'Mixtos (6 Arequipe + 6 Milo)': [
-    {label:'Caja x12', qty:12, unit:'caja', precio:15000},
-    {label:'Caja x24', qty:24, unit:'caja', precio:29000}
-  ]
+  'Brownie milo': [{label:'Unidad',qty:1,unit:'und',precio:1500},{label:'Paquete x12',qty:12,unit:'paq',precio:15000},{label:'Paquete x24',qty:24,unit:'paq',precio:27000}],
+  'Brownie stevia': [{label:'Unidad',qty:1,unit:'und',precio:2000},{label:'Paquete x12',qty:12,unit:'paq',precio:22000},{label:'Paquete x24',qty:24,unit:'paq',precio:48000}],
+  'Alfajores arequipe': [{label:'Unidad',qty:1,unit:'und',precio:1200},{label:'Caja x12',qty:12,unit:'caja',precio:14000},{label:'Caja x24',qty:24,unit:'caja',precio:27000}],
+  'Alfajores milo': [{label:'Unidad',qty:1,unit:'und',precio:1500},{label:'Caja x12',qty:12,unit:'caja',precio:17000},{label:'Caja x24',qty:24,unit:'caja',precio:31000}],
+  'Mixtos (6 Arequipe + 6 Milo)': [{label:'Caja x12',qty:12,unit:'caja',precio:15000},{label:'Caja x24',qty:24,unit:'caja',precio:29000}]
 };
 
+const CATALOGO = [
+  { nombre:'Brownie milo', desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
+  { nombre:'Brownie stevia', desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.', img:null },
+  { nombre:'Alfajores arequipe', desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.', img:null },
+  { nombre:'Alfajores milo', desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null },
+  { nombre:'Mixtos (6 Arequipe + 6 Milo)', desc:'La mejor opción para los indecisos. Una caja con lo mejor de los dos mundos: alfajores de arequipe y alfajores de Milo.', img:null }
+];
+
 const ESTADOS = [
-  {label:'Pendiente comprar', cls:'badge-estado-0'},
-  {label:'Hacer de cero', cls:'badge-estado-1'},
-  {label:'Masa lista', cls:'badge-estado-2'},
-  {label:'Hecho', cls:'badge-estado-3'}
+  {label:'Pendiente comprar',cls:'badge-estado-0'},
+  {label:'Hacer de cero',cls:'badge-estado-1'},
+  {label:'Masa lista',cls:'badge-estado-2'},
+  {label:'Hecho',cls:'badge-estado-3'}
 ];
 
 let pedidos = JSON.parse(localStorage.getItem('mm_pedidos') || '[]');
 let recetas = JSON.parse(localStorage.getItem('mm_recetas') || '[]');
 let editEstadoIdx = null;
+let catCarrito = {};
 
-// Cargar recetas default si no hay ninguna guardada
-if (!recetas.length) {
-  recetas = RECETAS_DEFAULT;
-  localStorage.setItem('mm_recetas', JSON.stringify(recetas));
-}
+if (!recetas.length) { recetas = RECETAS_DEFAULT; localStorage.setItem('mm_recetas', JSON.stringify(recetas)); }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -380,10 +363,12 @@ function showScreen(id, btn) {
   if (id === 'cocinar') renderCocinar();
   if (id === 'recetas') renderRecetas();
   if (id === 'pedidos') renderPedidos();
+  if (id === 'catalogo') renderCatalogo();
 }
 
 function openModal(id) {
   if (id === 'nuevo-pedido') initNuevoPedido();
+  if (id === 'cat-checkout') initCheckout();
   document.getElementById('modal-' + id).classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -392,6 +377,139 @@ function closeModal(id) {
   document.body.style.overflow = '';
 }
 
+// ===== CATÁLOGO CLIENTE =====
+function renderCatalogo() {
+  const cont = document.getElementById('cat-productos');
+  cont.innerHTML = CATALOGO.map(p => {
+    const opciones = PRECIOS[p.nombre] || [];
+    const imgHtml = p.img
+      ? `<div class="cat-product-img"><img src="${p.img}" alt="${p.nombre}" loading="lazy"></div>`
+      : `<div class="cat-product-img-placeholder"><i class="ti ti-photo"></i><span>Foto próximamente</span></div>`;
+    const opcionesHtml = opciones.map(op => {
+      const key = p.nombre + '||' + op.label;
+      const qty = catCarrito[key]?.qty || 0;
+      return `<div class="cat-price-row">
+        <span class="cat-price-label">${op.label}</span>
+        <span class="cat-price-amount">$${op.precio.toLocaleString('es-CO')}</span>
+        <div class="cat-qty-wrap">
+          <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${op.precio},${op.qty},'${op.unit}',-1)">−</button>
+          <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
+          <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${op.precio},${op.qty},'${op.unit}',1)">+</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="cat-product-card">
+      ${imgHtml}
+      <div class="cat-product-body">
+        <div class="cat-product-name">${p.nombre}</div>
+        <div class="cat-product-desc">${p.desc}</div>
+        ${opcionesHtml}
+      </div>
+    </div>`;
+  }).join('');
+  updateCartBar();
+}
+
+function catQty(prod, label, precio, qtyPack, unit, delta) {
+  const key = prod + '||' + label;
+  if (!catCarrito[key]) catCarrito[key] = {prod, label, precio, qtyPack, unit, qty:0};
+  catCarrito[key].qty = Math.max(0, (catCarrito[key].qty || 0) + delta);
+  const safeKey = btoa(key).replace(/=/g,'');
+  const el = document.getElementById('cat-qty-' + safeKey);
+  if (el) el.textContent = catCarrito[key].qty;
+  if (catCarrito[key].qty === 0) delete catCarrito[key];
+  updateCartBar();
+}
+
+function updateCartBar() {
+  const items = Object.values(catCarrito);
+  const total = items.reduce((s, i) => s + i.qty * i.precio, 0);
+  const count = items.reduce((s, i) => s + i.qty, 0);
+  const bar = document.getElementById('cat-cart-bar');
+  const label = document.getElementById('cat-cart-label');
+  const totalEl = document.getElementById('cat-cart-total-bar');
+  if (count > 0) {
+    bar.classList.add('visible');
+    label.textContent = `Ver pedido (${count} item${count>1?'s':''})`;
+    totalEl.textContent = '$' + total.toLocaleString('es-CO');
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+function initCheckout() {
+  const items = Object.values(catCarrito);
+  const total = items.reduce((s, i) => s + i.qty * i.precio, 0);
+  const resumen = document.getElementById('cat-resumen-items');
+  resumen.innerHTML = items.map(i => `
+    <div class="cat-resumen-item">
+      <span>${i.qty}x ${i.label} ${i.prod}</span>
+      <span style="font-family:'Space Mono',monospace;font-size:12px;">$${(i.qty*i.precio).toLocaleString('es-CO')}</span>
+    </div>`).join('');
+  document.getElementById('cat-resumen-total-val').textContent = '$' + total.toLocaleString('es-CO');
+  document.getElementById('cat-paso-1').style.display = 'block';
+  document.getElementById('cat-paso-2').style.display = 'none';
+  document.querySelectorAll('.pago-opt').forEach(o => o.classList.remove('sel'));
+  document.querySelector('.pago-opt[data-pago="efectivo"]').classList.add('sel');
+}
+
+function selPago(el) {
+  document.querySelectorAll('.pago-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+async function enviarPedidoCliente() {
+  const nombre = document.getElementById('cat-nombre').value.trim();
+  const tel = document.getElementById('cat-tel').value.trim();
+  const dir = document.getElementById('cat-dir').value.trim();
+  const nota = document.getElementById('cat-nota').value.trim();
+  const pagoEl = document.querySelector('.pago-opt.sel');
+  const pago = pagoEl ? pagoEl.dataset.pago : 'efectivo';
+
+  if (!nombre) { alert('Pon tu nombre'); return; }
+  if (!tel) { alert('Pon tu teléfono'); return; }
+  if (!dir) { alert('Pon tu dirección de entrega'); return; }
+
+  const items = Object.values(catCarrito).map(i => ({
+    prod: i.prod, label: i.label, qty: i.qty, unit: i.unit, precio: i.precio, subtotal: i.qty * i.precio
+  }));
+  const total = items.reduce((s, i) => s + i.subtotal, 0);
+
+  const pedido = {
+    id: Date.now(),
+    cliente: nombre + ' · ' + tel,
+    dir, nota,
+    fecha: '',
+    items,
+    estado: 0,
+    total,
+    abono: 0,
+    pago,
+    origen: 'cliente'
+  };
+
+  pedidos.unshift(pedido);
+  localStorage.setItem('mm_pedidos', JSON.stringify(pedidos));
+
+  try {
+    await fetch('/api/pedidos', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(pedido)
+    });
+  } catch(e) {}
+
+  document.getElementById('cat-paso-1').style.display = 'none';
+  document.getElementById('cat-paso-2').style.display = 'block';
+}
+
+function resetCatalogo() {
+  catCarrito = {};
+  closeModal('cat-checkout');
+  renderCatalogo();
+}
+
+// ===== ADMIN =====
 function getProductosList() {
   const base = ['Brownie milo','Brownie stevia','Alfajores arequipe','Alfajores milo','Mixtos (6 Arequipe + 6 Milo)'];
   const extra = recetas.map(r => r.producto).filter(p => !base.includes(p));
@@ -399,33 +517,24 @@ function getProductosList() {
 }
 
 function initNuevoPedido() {
-  ['np-cliente','np-dir','np-nota','np-total','np-abono'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('np-fecha').value = '';
-  document.getElementById('np-total-auto').style.display = 'none';
-  document.getElementById('np-total-valor').textContent = '$0';
+  ['np-cliente','np-dir','np-nota','np-total','np-abono'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('np-fecha').value='';
+  document.getElementById('np-total-auto').style.display='none';
   const preview = document.getElementById('np-saldo-preview');
-  preview.textContent = 'Saldo pendiente: $0';
-  preview.style.background = '#fbeaf0';
-  preview.style.color = '#72243E';
-
+  preview.textContent='Saldo pendiente: $0'; preview.style.background='#fbeaf0'; preview.style.color='#72243E';
   const allProds = getProductosList();
   const cont = document.getElementById('np-productos');
   cont.innerHTML = allProds.map(p => {
-    const opciones = PRECIOS[p] || [{label:'Unidad', qty:1, unit:'und', precio:0}];
-    return `
-      <div class="product-block" data-prod="${p}">
-        <div class="product-block-name">${p}</div>
-        ${opciones.map((op, oi) => `
-          <div class="price-row">
-            <span class="price-label">${op.label}</span>
-            <span class="price-badge">$${op.precio.toLocaleString('es-CO')}</span>
-            <input class="qty-input" type="number" min="0" value="0"
-              data-prod="${p}" data-precio="${op.precio}" data-qty="${op.qty}" data-unit="${op.unit}" data-label="${op.label}"
-              inputmode="numeric" oninput="calcTotal()">
-          </div>`).join('')}
-      </div>`;
+    const opciones = PRECIOS[p] || [{label:'Unidad',qty:1,unit:'und',precio:0}];
+    return `<div class="product-block" data-prod="${p}">
+      <div class="product-block-name">${p}</div>
+      ${opciones.map(op => `<div class="price-row">
+        <span class="price-label">${op.label}</span>
+        <span class="price-badge">$${op.precio.toLocaleString('es-CO')}</span>
+        <input class="qty-input" type="number" min="0" value="0" data-prod="${p}" data-precio="${op.precio}" data-qty="${op.qty}" data-unit="${op.unit}" data-label="${op.label}" inputmode="numeric" oninput="calcTotal()">
+      </div>`).join('')}
+    </div>`;
   }).join('');
-
   setupSelector('np-estado', 0);
   setupSelector('np-pago', null, true);
 }
@@ -433,272 +542,141 @@ function initNuevoPedido() {
 function calcTotal() {
   let total = 0;
   document.querySelectorAll('#np-productos .qty-input').forEach(input => {
-    const qty = parseInt(input.value) || 0;
-    const precio = parseInt(input.dataset.precio) || 0;
-    total += qty * precio;
+    total += (parseInt(input.value)||0) * (parseInt(input.dataset.precio)||0);
   });
   if (total > 0) {
-    document.getElementById('np-total-auto').style.display = 'block';
-    document.getElementById('np-total-valor').textContent = '$' + total.toLocaleString('es-CO');
-    document.getElementById('np-total').value = total;
+    document.getElementById('np-total-auto').style.display='block';
+    document.getElementById('np-total-valor').textContent='$'+total.toLocaleString('es-CO');
+    document.getElementById('np-total').value=total;
     calcSaldo();
-  } else {
-    document.getElementById('np-total-auto').style.display = 'none';
-  }
+  } else { document.getElementById('np-total-auto').style.display='none'; }
 }
 
 function setupSelector(containerId, defaultVal, byText) {
-  const opts = document.querySelectorAll('#' + containerId + ' .estado-opt');
+  const opts = document.querySelectorAll('#'+containerId+' .estado-opt');
   opts.forEach(opt => {
     opt.classList.remove('sel');
-    if (byText) { if (opt.dataset.val === 'efectivo') opt.classList.add('sel'); }
-    else { if (parseInt(opt.dataset.val) === defaultVal) opt.classList.add('sel'); }
-    opt.onclick = function() { opts.forEach(o => o.classList.remove('sel')); this.classList.add('sel'); };
+    if (byText) { if (opt.dataset.val==='efectivo') opt.classList.add('sel'); }
+    else { if (parseInt(opt.dataset.val)===defaultVal) opt.classList.add('sel'); }
+    opt.onclick = function() { opts.forEach(o=>o.classList.remove('sel')); this.classList.add('sel'); };
   });
 }
 
 function calcSaldo() {
-  const total = parseFloat(document.getElementById('np-total').value) || 0;
-  const abono = parseFloat(document.getElementById('np-abono').value) || 0;
-  const saldo = total - abono;
+  const total = parseFloat(document.getElementById('np-total').value)||0;
+  const abono = parseFloat(document.getElementById('np-abono').value)||0;
+  const saldo = total-abono;
   const el = document.getElementById('np-saldo-preview');
-  el.textContent = 'Saldo pendiente: $' + saldo.toLocaleString('es-CO');
-  el.style.background = saldo <= 0 ? '#EAF3DE' : '#fbeaf0';
-  el.style.color = saldo <= 0 ? '#27500A' : '#A32D2D';
+  el.textContent='Saldo pendiente: $'+saldo.toLocaleString('es-CO');
+  el.style.background=saldo<=0?'#EAF3DE':'#fbeaf0';
+  el.style.color=saldo<=0?'#27500A':'#A32D2D';
 }
 
 function getSelectedOpt(containerId) {
-  const sel = document.querySelector('#' + containerId + ' .estado-opt.sel');
+  const sel = document.querySelector('#'+containerId+' .estado-opt.sel');
   return sel ? sel.dataset.val : null;
 }
 
 async function guardarPedido() {
   const cliente = document.getElementById('np-cliente').value.trim();
   if (!cliente) { alert('Pon el nombre del cliente'); return; }
-
   const items = [];
   document.querySelectorAll('#np-productos .qty-input').forEach(input => {
-    const qty = parseInt(input.value) || 0;
-    if (qty > 0) items.push({
-      prod: input.dataset.prod,
-      label: input.dataset.label,
-      qty,
-      unit: input.dataset.unit,
-      precio: parseInt(input.dataset.precio) || 0,
-      subtotal: qty * (parseInt(input.dataset.precio) || 0)
-    });
+    const qty = parseInt(input.value)||0;
+    if (qty>0) items.push({prod:input.dataset.prod,label:input.dataset.label,qty,unit:input.dataset.unit,precio:parseInt(input.dataset.precio)||0,subtotal:qty*(parseInt(input.dataset.precio)||0)});
   });
-
-  const pedido = {
-    id: Date.now(),
-    cliente,
-    dir: document.getElementById('np-dir').value.trim(),
-    nota: document.getElementById('np-nota').value.trim(),
-    fecha: document.getElementById('np-fecha').value,
-    items,
-    estado: parseInt(getSelectedOpt('np-estado') || '0'),
-    total: parseFloat(document.getElementById('np-total').value) || 0,
-    abono: parseFloat(document.getElementById('np-abono').value) || 0,
-    pago: getSelectedOpt('np-pago') || 'efectivo'
-  };
-
+  const pedido = {id:Date.now(),cliente,dir:document.getElementById('np-dir').value.trim(),nota:document.getElementById('np-nota').value.trim(),fecha:document.getElementById('np-fecha').value,items,estado:parseInt(getSelectedOpt('np-estado')||'0'),total:parseFloat(document.getElementById('np-total').value)||0,abono:parseFloat(document.getElementById('np-abono').value)||0,pago:getSelectedOpt('np-pago')||'efectivo'};
   pedidos.unshift(pedido);
   localStorage.setItem('mm_pedidos', JSON.stringify(pedidos));
   closeModal('nuevo-pedido');
   renderPedidos();
-
   try {
-    const res = await fetch('/api/pedidos', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(pedido)
-    });
-    showToast(res.ok ? '✓ Guardado en historial' : '⚠ Sin conexión al historial');
-  } catch(e) {
-    showToast('⚠ Sin conexión al historial');
-  }
+    const res = await fetch('/api/pedidos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pedido)});
+    showToast(res.ok?'✓ Guardado en historial':'⚠ Sin conexión al historial');
+  } catch(e) { showToast('⚠ Sin conexión al historial'); }
 }
 
 function renderPedidos() {
   const cont = document.getElementById('lista-pedidos');
-  if (!pedidos.length) {
-    cont.innerHTML = `<div class="no-pedidos"><i class="ti ti-cake"></i>Aún no hay pedidos.<br>¡Agrega el primero!</div>`;
-    return;
-  }
-  cont.innerHTML = pedidos.map((p, i) => {
-    const saldo = p.total - p.abono;
-    const saldoHtml = saldo > 0
-      ? `<span class="saldo-chip saldo-pend">Saldo $${saldo.toLocaleString('es-CO')}</span>`
-      : `<span class="saldo-chip saldo-ok"><i class="ti ti-check" style="font-size:11px;"></i> Pagado</span>`;
-    const itemsTxt = p.items.length
-      ? p.items.map(it => `${it.qty} ${it.unit || ''} ${it.prod}`).join(' · ')
-      : 'Sin productos';
-    const totalTxt = p.total ? ` · $${p.total.toLocaleString('es-CO')}` : '';
-    const fechaTxt = p.fecha ? new Date(p.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'}) : '';
+  if (!pedidos.length) { cont.innerHTML=`<div class="no-pedidos"><i class="ti ti-cake"></i>Aún no hay pedidos.<br>¡Agrega el primero!</div>`; return; }
+  cont.innerHTML = pedidos.map((p,i) => {
+    const saldo=p.total-p.abono;
+    const saldoHtml=saldo>0?`<span class="saldo-chip saldo-pend">Saldo $${saldo.toLocaleString('es-CO')}</span>`:`<span class="saldo-chip saldo-ok"><i class="ti ti-check" style="font-size:11px;"></i> Pagado</span>`;
+    const itemsTxt=p.items.length?p.items.map(it=>`${it.qty} ${it.unit||''} ${it.prod}`).join(' · '):'Sin productos';
+    const totalTxt=p.total?` · $${p.total.toLocaleString('es-CO')}`:' ';
+    const fechaTxt=p.fecha?new Date(p.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'}):'';
+    const origenBadge=p.origen==='cliente'?`<span class="badge badge-cliente">Cliente</span>`:'';
     return `<div class="order-card">
-      <div class="order-card-top">
-        <div>
-          <div class="order-client">${p.cliente}</div>
-          ${p.dir ? `<div class="order-dir"><i class="ti ti-map-pin" style="font-size:12px;"></i> ${p.dir}</div>` : ''}
-        </div>
-        <div class="order-date">${fechaTxt}</div>
-      </div>
+      <div class="order-card-top"><div><div class="order-client">${p.cliente}</div>${p.dir?`<div class="order-dir"><i class="ti ti-map-pin" style="font-size:12px;"></i> ${p.dir}</div>`:''}</div><div class="order-date">${fechaTxt}</div></div>
       <div class="order-items">${itemsTxt}${totalTxt}</div>
-      <div class="order-footer">
-        <span class="badge ${ESTADOS[p.estado].cls}" onclick="abrirEditEstado(${i})">${ESTADOS[p.estado].label}</span>
-        <span class="badge badge-pago">${p.pago}</span>
-        ${saldoHtml}
-      </div>
-      ${p.nota ? `<div class="order-nota"><i class="ti ti-info-circle" style="font-size:11px;"></i> ${p.nota}</div>` : ''}
+      <div class="order-footer"><span class="badge ${ESTADOS[p.estado].cls}" onclick="abrirEditEstado(${i})">${ESTADOS[p.estado].label}</span>${origenBadge}<span class="badge badge-pago">${p.pago}</span>${saldoHtml}</div>
+      ${p.nota?`<div class="order-nota"><i class="ti ti-info-circle" style="font-size:11px;"></i> ${p.nota}</div>`:''}
     </div>`;
   }).join('');
 }
 
 function abrirEditEstado(idx) {
-  editEstadoIdx = idx;
-  const opts = document.querySelectorAll('#ee-estado .estado-opt');
-  opts.forEach(opt => {
-    opt.classList.toggle('sel', parseInt(opt.dataset.val) === pedidos[idx].estado);
-    opt.onclick = function() { opts.forEach(o => o.classList.remove('sel')); this.classList.add('sel'); };
-  });
+  editEstadoIdx=idx;
+  const opts=document.querySelectorAll('#ee-estado .estado-opt');
+  opts.forEach(opt=>{opt.classList.toggle('sel',parseInt(opt.dataset.val)===pedidos[idx].estado);opt.onclick=function(){opts.forEach(o=>o.classList.remove('sel'));this.classList.add('sel');};});
   openModal('edit-estado');
 }
-
 function guardarEstado() {
-  if (editEstadoIdx === null) return;
-  const val = document.querySelector('#ee-estado .estado-opt.sel');
-  if (val) pedidos[editEstadoIdx].estado = parseInt(val.dataset.val);
-  localStorage.setItem('mm_pedidos', JSON.stringify(pedidos));
-  closeModal('edit-estado');
-  renderPedidos();
+  if(editEstadoIdx===null) return;
+  const val=document.querySelector('#ee-estado .estado-opt.sel');
+  if(val) pedidos[editEstadoIdx].estado=parseInt(val.dataset.val);
+  localStorage.setItem('mm_pedidos',JSON.stringify(pedidos));
+  closeModal('edit-estado'); renderPedidos();
 }
-
 function eliminarPedido() {
-  if (editEstadoIdx === null) return;
-  if (!confirm('¿Eliminar este pedido?')) return;
-  pedidos.splice(editEstadoIdx, 1);
-  localStorage.setItem('mm_pedidos', JSON.stringify(pedidos));
-  editEstadoIdx = null;
-  closeModal('edit-estado');
-  renderPedidos();
+  if(editEstadoIdx===null) return;
+  if(!confirm('¿Eliminar este pedido?')) return;
+  pedidos.splice(editEstadoIdx,1);
+  localStorage.setItem('mm_pedidos',JSON.stringify(pedidos));
+  editEstadoIdx=null; closeModal('edit-estado'); renderPedidos();
 }
-
-function toggleNuevoProducto() {
-  document.getElementById('nr-nuevo-wrap').style.display =
-    document.getElementById('nr-producto').value === '__nuevo__' ? 'block' : 'none';
-}
-
+function toggleNuevoProducto() { document.getElementById('nr-nuevo-wrap').style.display=document.getElementById('nr-producto').value==='__nuevo__'?'block':'none'; }
 function addIngrediente() {
-  const cont = document.getElementById('nr-ingredientes');
-  const row = document.createElement('div');
-  row.className = 'ing-row';
-  row.innerHTML = `<input class="ing-name-input" placeholder="Ingrediente"><input class="ing-amount" placeholder="0" type="number" inputmode="decimal"><select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select>`;
+  const cont=document.getElementById('nr-ingredientes');
+  const row=document.createElement('div'); row.className='ing-row';
+  row.innerHTML=`<input class="ing-name-input" placeholder="Ingrediente"><input class="ing-amount" placeholder="0" type="number" inputmode="decimal"><select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select>`;
   cont.appendChild(row);
 }
-
 function guardarReceta() {
-  const selProd = document.getElementById('nr-producto');
-  let producto = selProd.value;
-  if (producto === '__nuevo__') {
-    producto = document.getElementById('nr-nuevo-nombre').value.trim();
-    if (!producto) { alert('Pon el nombre del producto'); return; }
-  }
-  const base = parseInt(document.getElementById('nr-base').value) || 24;
-  const ings = [];
-  document.querySelectorAll('#nr-ingredientes .ing-row').forEach(row => {
-    const n = row.querySelector('.ing-name-input').value.trim();
-    const a = parseFloat(row.querySelector('.ing-amount').value) || 0;
-    const u = row.querySelector('.ing-unit-select').value;
-    if (n && a) ings.push({nombre:n, cantidad:a, unidad:u});
+  const selProd=document.getElementById('nr-producto');
+  let producto=selProd.value;
+  if(producto==='__nuevo__'){producto=document.getElementById('nr-nuevo-nombre').value.trim();if(!producto){alert('Pon el nombre del producto');return;}}
+  const base=parseInt(document.getElementById('nr-base').value)||24;
+  const ings=[];
+  document.querySelectorAll('#nr-ingredientes .ing-row').forEach(row=>{
+    const n=row.querySelector('.ing-name-input').value.trim(),a=parseFloat(row.querySelector('.ing-amount').value)||0,u=row.querySelector('.ing-unit-select').value;
+    if(n&&a) ings.push({nombre:n,cantidad:a,unidad:u});
   });
-  const existing = recetas.findIndex(r => r.producto === producto);
-  const rec = {producto, base, ingredientes:ings};
-  if (existing >= 0) recetas[existing] = rec; else recetas.push(rec);
-  localStorage.setItem('mm_recetas', JSON.stringify(recetas));
-  closeModal('nueva-receta');
-  renderRecetas();
-  document.getElementById('nr-ingredientes').innerHTML = `<div class="ing-row"><input class="ing-name-input" placeholder="Ingrediente"><input class="ing-amount" placeholder="100" type="number" inputmode="decimal"><select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select></div>`;
-  selProd.value = 'Brownie milo';
-  document.getElementById('nr-nuevo-wrap').style.display = 'none';
+  const existing=recetas.findIndex(r=>r.producto===producto);
+  const rec={producto,base,ingredientes:ings};
+  if(existing>=0) recetas[existing]=rec; else recetas.push(rec);
+  localStorage.setItem('mm_recetas',JSON.stringify(recetas));
+  closeModal('nueva-receta'); renderRecetas();
+  document.getElementById('nr-ingredientes').innerHTML=`<div class="ing-row"><input class="ing-name-input" placeholder="Ingrediente"><input class="ing-amount" placeholder="100" type="number" inputmode="decimal"><select class="ing-unit-select"><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>und</option><option>pizca</option></select></div>`;
+  selProd.value='Brownie milo'; document.getElementById('nr-nuevo-wrap').style.display='none';
 }
-
 function renderRecetas() {
-  const cont = document.getElementById('lista-recetas');
-  if (!recetas.length) { cont.innerHTML = `<p style="color:var(--mm-muted);font-size:13px;margin-bottom:12px;">Aún no tienes recetas.</p>`; return; }
-  cont.innerHTML = recetas.map((r, i) => `
-    <div class="receta-card">
-      <div class="receta-header">
-        <span class="receta-title">${r.producto}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="receta-base">Base: ${r.base} und</span>
-          <button onclick="eliminarReceta(${i})" style="background:none;border:none;cursor:pointer;color:var(--mm-muted);font-size:16px;padding:2px;"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>
-      ${r.ingredientes.map(ing => `
-        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:0.5px solid var(--mm-border);">
-          <span>${ing.nombre}</span>
-          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--mm-muted);">${ing.cantidad} ${ing.unidad}</span>
-        </div>`).join('')}
-    </div>`).join('');
+  const cont=document.getElementById('lista-recetas');
+  if(!recetas.length){cont.innerHTML=`<p style="color:var(--mm-muted);font-size:13px;margin-bottom:12px;">Aún no tienes recetas.</p>`;return;}
+  cont.innerHTML=recetas.map((r,i)=>`<div class="receta-card"><div class="receta-header"><span class="receta-title">${r.producto}</span><div style="display:flex;align-items:center;gap:8px;"><span class="receta-base">Base: ${r.base} und</span><button onclick="eliminarReceta(${i})" style="background:none;border:none;cursor:pointer;color:var(--mm-muted);font-size:16px;padding:2px;"><i class="ti ti-trash"></i></button></div></div>${r.ingredientes.map(ing=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:0.5px solid var(--mm-border);"><span>${ing.nombre}</span><span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--mm-muted);">${ing.cantidad} ${ing.unidad}</span></div>`).join('')}</div>`).join('');
 }
-
-function eliminarReceta(idx) {
-  if (!confirm('¿Eliminar esta receta?')) return;
-  recetas.splice(idx, 1);
-  localStorage.setItem('mm_recetas', JSON.stringify(recetas));
-  renderRecetas();
-}
-
+function eliminarReceta(idx){if(!confirm('¿Eliminar esta receta?'))return;recetas.splice(idx,1);localStorage.setItem('mm_recetas',JSON.stringify(recetas));renderRecetas();}
 function renderCocinar() {
-  const cont = document.getElementById('resumen-cocinar');
-  const activos = pedidos.filter(p => p.estado !== 3);
-  if (!activos.length) { cont.innerHTML = `<div class="no-pedidos"><i class="ti ti-mood-smile"></i>No hay pedidos pendientes.</div>`; return; }
-
-  const totales = {};
-  activos.forEach(p => {
-    p.items.forEach(it => {
-      const rec = recetas.find(r => r.producto === it.prod);
-      if (!rec || !rec.ingredientes.length) return;
-      const unidades = it.qty * (it.qty === 1 ? 1 : (it.unit === 'und' ? 1 : parseInt(it.label?.match(/\d+/)?.[0]) || it.qty));
-      const factor = unidades / rec.base;
-      rec.ingredientes.forEach(ing => {
-        const key = ing.nombre + '||' + ing.unidad;
-        totales[key] = (totales[key] || 0) + ing.cantidad * factor;
-      });
-    });
-  });
-
-  const keys = Object.keys(totales);
-  const totalHtml = keys.length ? `
-    <div class="total-box">
-      <div class="total-title">total de ingredientes</div>
-      ${keys.map(k => {
-        const [nombre, unidad] = k.split('||');
-        const val = totales[k];
-        const display = val % 1 === 0 ? val : parseFloat(val.toFixed(1));
-        return `<div class="total-ing-row"><span>${nombre}</span><span style="font-family:'Space Mono',monospace;">${display} ${unidad}</span></div>`;
-      }).join('')}
-    </div>` : `<div style="background:#faeeda;border-radius:10px;padding:12px 14px;font-size:13px;color:#633806;margin-bottom:16px;">Agrega recetas para ver el total de ingredientes.</div>`;
-
-  cont.innerHTML = totalHtml + `
-    <p class="section-title">pedidos activos (${activos.length})</p>
-    ${activos.map(p => `
-      <div style="background:var(--mm-card);border:0.5px solid var(--mm-border);border-radius:12px;padding:12px 14px;margin-bottom:9px;">
-        <div style="font-weight:500;font-size:14px;margin-bottom:3px;">${p.cliente}</div>
-        <div style="font-size:12px;color:var(--mm-muted);margin-bottom:8px;">${p.items.map(it=>it.qty+' '+(it.unit||'')+' '+it.prod).join(' · ')||'Sin productos'}</div>
-        <span class="badge ${ESTADOS[p.estado].cls}">${ESTADOS[p.estado].label}</span>
-      </div>`).join('')}`;
+  const cont=document.getElementById('resumen-cocinar');
+  const activos=pedidos.filter(p=>p.estado!==3);
+  if(!activos.length){cont.innerHTML=`<div class="no-pedidos"><i class="ti ti-mood-smile"></i>No hay pedidos pendientes.</div>`;return;}
+  const totales={};
+  activos.forEach(p=>{ p.items.forEach(it=>{const rec=recetas.find(r=>r.producto===it.prod);if(!rec||!rec.ingredientes.length)return;const factor=it.qty/rec.base;rec.ingredientes.forEach(ing=>{const key=ing.nombre+'||'+ing.unidad;totales[key]=(totales[key]||0)+ing.cantidad*factor;});});});
+  const keys=Object.keys(totales);
+  const totalHtml=keys.length?`<div class="total-box"><div class="total-title">total de ingredientes</div>${keys.map(k=>{const[nombre,unidad]=k.split('||');const val=totales[k];const display=val%1===0?val:parseFloat(val.toFixed(1));return`<div class="total-ing-row"><span>${nombre}</span><span style="font-family:'Space Mono',monospace;">${display} ${unidad}</span></div>`;}).join('')}</div>`:`<div style="background:#faeeda;border-radius:10px;padding:12px 14px;font-size:13px;color:#633806;margin-bottom:16px;">Agrega recetas para ver el total de ingredientes.</div>`;
+  cont.innerHTML=totalHtml+`<p class="section-title">pedidos activos (${activos.length})</p>${activos.map(p=>`<div style="background:var(--mm-card);border:0.5px solid var(--mm-border);border-radius:12px;padding:12px 14px;margin-bottom:9px;"><div style="font-weight:500;font-size:14px;margin-bottom:3px;">${p.cliente}</div><div style="font-size:12px;color:var(--mm-muted);margin-bottom:8px;">${p.items.map(it=>it.qty+' '+(it.unit||'')+' '+it.prod).join(' · ')||'Sin productos'}</div><span class="badge ${ESTADOS[p.estado].cls}">${ESTADOS[p.estado].label}</span></div>`).join('')}`;
 }
-
-function addToCalendar() {
-  const cliente = document.getElementById('np-cliente').value.trim() || 'Pedido';
-  const fecha = document.getElementById('np-fecha').value;
-  if (!fecha) { alert('Pon la fecha de entrega primero'); return; }
-  const d = fecha.replace(/-/g,'');
-  const title = encodeURIComponent('More Mío · ' + cliente);
-  const notes = encodeURIComponent('Pedido de repostería para ' + cliente);
-  window.open(`https://calendar.google.com/calendar/event?action=TEMPLATE&dates=${d}/${d}&text=${title}&details=${notes}`, '_blank');
-}
+function addToCalendar(){const cliente=document.getElementById('np-cliente').value.trim()||'Pedido';const fecha=document.getElementById('np-fecha').value;if(!fecha){alert('Pon la fecha de entrega primero');return;}const d=fecha.replace(/-/g,'');window.open(`https://calendar.google.com/calendar/event?action=TEMPLATE&dates=${d}/${d}&text=${encodeURIComponent('More Mío · '+cliente)}&details=${encodeURIComponent('Pedido para '+cliente)}`,'_blank');}
 
 renderPedidos();
 renderRecetas();
