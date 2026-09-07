@@ -318,21 +318,62 @@ const RECETAS_DEFAULT = [
   { producto:'Alfajores milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:200,unidad:'g'},{nombre:'Maicena',cantidad:150,unidad:'g'},{nombre:'Milo en polvo',cantidad:60,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:3,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Milo untable (relleno)',cantidad:1,unidad:'und'}] }
 ];
 
-const PRECIOS = {
-  'Brownie milo': [{label:'Unidad',qty:1,unit:'und',precio:1500},{label:'Paquete x12',qty:12,unit:'paq',precio:15000},{label:'Paquete x24',qty:24,unit:'paq',precio:27000}],
-  'Brownie stevia': [{label:'Unidad',qty:1,unit:'und',precio:2000},{label:'Paquete x12',qty:12,unit:'paq',precio:22000},{label:'Paquete x24',qty:24,unit:'paq',precio:48000}],
-  'Alfajores arequipe': [{label:'Unidad',qty:1,unit:'und',precio:1200},{label:'Caja x12',qty:12,unit:'caja',precio:14000},{label:'Caja x24',qty:24,unit:'caja',precio:27000}],
-  'Alfajores milo': [{label:'Unidad',qty:1,unit:'und',precio:1500},{label:'Caja x12',qty:12,unit:'caja',precio:17000},{label:'Caja x24',qty:24,unit:'caja',precio:31000}],
-  'Mixtos (6 Arequipe + 6 Milo)': [{label:'Caja x12',qty:12,unit:'caja',precio:15000},{label:'Caja x24',qty:24,unit:'caja',precio:29000}]
+// Precio por unidad de cada producto
+const PRECIO_UNIT = {
+  'Brownie milo': 1500,
+  'Brownie stevia': 2000,
+  'Alfajores arequipe': 1200,
+  'Alfajores milo': 1500
 };
 
-const CATALOGO = [
-  { nombre:'Brownie milo', desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
-  { nombre:'Brownie stevia', desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.', img:null },
-  { nombre:'Alfajores arequipe', desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.', img:null },
-  { nombre:'Alfajores milo', desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null },
-  { nombre:'Mixtos (6 Arequipe + 6 Milo)', desc:'La mejor opción para los indecisos. Una caja con lo mejor de los dos mundos: alfajores de arequipe y alfajores de Milo.', img:null }
+// Opciones de cantidad estándar para todos los productos
+const CANTIDADES = [
+  {label:'1 unidad', qty:1, unit:'und'},
+  {label:'4 unidades', qty:4, unit:'und'},
+  {label:'8 unidades', qty:8, unit:'und'},
+  {label:'10 unidades', qty:10, unit:'und'},
+  {label:'12 unidades', qty:12, unit:'und'},
+  {label:'24 unidades', qty:24, unit:'und'}
 ];
+
+// Sabores disponibles para mixtos
+const SABORES_ALFAJOR = ['Arequipe', 'Milo', 'Chips chocolate'];
+
+function getPrecioOpcion(producto, qty) {
+  const precioUnit = PRECIO_UNIT[producto] || 1500;
+  // Descuentos por volumen para paquetes
+  if (qty >= 24) return Math.round(precioUnit * qty * 0.85);
+  if (qty >= 12) return Math.round(precioUnit * qty * 0.88);
+  if (qty >= 8) return Math.round(precioUnit * qty * 0.92);
+  if (qty >= 4) return Math.round(precioUnit * qty * 0.95);
+  return precioUnit * qty;
+}
+
+const CATALOGO_INFO = {
+  'Brownie milo': { desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
+  'Brownie stevia': { desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.', img:null },
+  'Alfajores arequipe': { desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.', img:null },
+  'Alfajores milo': { desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null }
+};
+
+function getCatalogo() {
+  // Dinámico: toma las recetas guardadas + siempre agrega Mixtos al final
+  const prods = recetas.length ? recetas : RECETAS_DEFAULT;
+  const items = prods.map(r => ({
+    nombre: r.producto,
+    desc: CATALOGO_INFO[r.producto]?.desc || 'Producto artesanal More Mío hecho con amor.',
+    img: CATALOGO_INFO[r.producto]?.img || null,
+    esMixto: false
+  }));
+  // Agregar Mixtos al final siempre
+  items.push({
+    nombre: 'Caja Mixta de Alfajores',
+    desc: 'Arma tu caja a tu gusto. Elige la cantidad total y selecciona cuántos de cada sabor quieres: Arequipe, Milo y Chips chocolate.',
+    img: null,
+    esMixto: true
+  });
+  return items;
+}
 
 const ESTADOS = [
   {label:'Pendiente comprar',cls:'badge-estado-0'},
@@ -380,24 +421,54 @@ function closeModal(id) {
 // ===== CATÁLOGO CLIENTE =====
 function renderCatalogo() {
   const cont = document.getElementById('cat-productos');
-  cont.innerHTML = CATALOGO.map(p => {
-    const opciones = PRECIOS[p.nombre] || [];
+  const catalogo = getCatalogo();
+  cont.innerHTML = catalogo.map(p => {
     const imgHtml = p.img
       ? `<div class="cat-product-img"><img src="${p.img}" alt="${p.nombre}" loading="lazy"></div>`
       : `<div class="cat-product-img-placeholder"><i class="ti ti-photo"></i><span>Foto próximamente</span></div>`;
-    const opcionesHtml = opciones.map(op => {
-      const key = p.nombre + '||' + op.label;
-      const qty = catCarrito[key]?.qty || 0;
-      return `<div class="cat-price-row">
-        <span class="cat-price-label">${op.label}</span>
-        <span class="cat-price-amount">$${op.precio.toLocaleString('es-CO')}</span>
-        <div class="cat-qty-wrap">
-          <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${op.precio},${op.qty},'${op.unit}',-1)">−</button>
-          <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
-          <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${op.precio},${op.qty},'${op.unit}',1)">+</button>
-        </div>
-      </div>`;
-    }).join('');
+
+    let opcionesHtml = '';
+    if (p.esMixto) {
+      // Tarjeta especial para mixtos
+      opcionesHtml = `
+        <div style="background:#fbeaf0;border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:8px;">CANTIDAD TOTAL</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="mixto-qty-opts">
+            ${[4,8,10,12,24].map(q => `<button class="mixto-qty-btn ${catCarrito['mixto_total']===q?'sel':''}" onclick="setMixtoQty(${q})" style="padding:6px 12px;border-radius:20px;border:0.5px solid var(--mm-frambuesa);background:${catCarrito['mixto_total']===q?'var(--mm-frambuesa)':'white'};color:${catCarrito['mixto_total']===q?'white':'var(--mm-frambuesa)'};font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;">${q} und</button>`).join('')}
+          </div>
+          <div style="font-size:12px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:8px;">ELIGE TUS SABORES</div>
+          ${SABORES_ALFAJOR.map(s => {
+            const key = 'mixto_' + s;
+            const qty = catCarrito[key]?.qty || 0;
+            return `<div class="cat-price-row">
+              <span class="cat-price-label">${s}</span>
+              <span class="cat-price-amount" id="mixto-precio-${s.replace(/ /g,'_')}">$0</span>
+              <div class="cat-qty-wrap">
+                <button class="cat-qty-btn" onclick="mixtoSaborQty('${s}',-1)">−</button>
+                <span class="cat-qty-num" id="cat-qty-mixto_${s.replace(/ /g,'_')}">${qty}</span>
+                <button class="cat-qty-btn" onclick="mixtoSaborQty('${s}',1)">+</button>
+              </div>
+            </div>`;
+          }).join('')}
+          <div id="mixto-aviso" style="font-size:11px;color:var(--mm-frambuesa);font-family:'Space Mono',monospace;margin-top:8px;display:none;"></div>
+        </div>`;
+    } else {
+      opcionesHtml = CANTIDADES.map(op => {
+        const precio = getPrecioOpcion(p.nombre, op.qty);
+        const key = p.nombre + '||' + op.label;
+        const qty = catCarrito[key]?.qty || 0;
+        return `<div class="cat-price-row">
+          <span class="cat-price-label">${op.label}</span>
+          <span class="cat-price-amount">$${precio.toLocaleString('es-CO')}</span>
+          <div class="cat-qty-wrap">
+            <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',-1)">−</button>
+            <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
+            <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',1)">+</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
     return `<div class="cat-product-card">
       ${imgHtml}
       <div class="cat-product-body">
@@ -407,6 +478,45 @@ function renderCatalogo() {
       </div>
     </div>`;
   }).join('');
+  updateCartBar();
+}
+
+function setMixtoQty(total) {
+  catCarrito['mixto_total'] = total;
+  const precioUnit = 1350; // precio mixto por unidad
+  SABORES_ALFAJOR.forEach(s => {
+    const el = document.getElementById('mixto-precio-' + s.replace(/ /g,'_'));
+    if (el) el.textContent = '$' + precioUnit.toLocaleString('es-CO') + ' c/u';
+  });
+  // Reset sabores
+  SABORES_ALFAJOR.forEach(s => { delete catCarrito['mixto_' + s]; });
+  renderCatalogo();
+}
+
+function mixtoSaborQty(sabor, delta) {
+  const total = catCarrito['mixto_total'] || 0;
+  if (!total) { showToast('Elige primero la cantidad total'); return; }
+  const key = 'mixto_' + sabor;
+  const actual = catCarrito[key]?.qty || 0;
+  const sumOtros = SABORES_ALFAJOR.filter(s=>s!==sabor).reduce((acc,s) => acc + (catCarrito['mixto_'+s]?.qty||0), 0);
+  const nuevaCant = Math.max(0, actual + delta);
+  if (delta > 0 && sumOtros + nuevaCant > total) {
+    document.getElementById('mixto-aviso').style.display = 'block';
+    document.getElementById('mixto-aviso').textContent = `Máximo ${total} unidades en total`;
+    setTimeout(()=>{ const av=document.getElementById('mixto-aviso'); if(av) av.style.display='none'; }, 2000);
+    return;
+  }
+  if (nuevaCant === 0) delete catCarrito[key];
+  else catCarrito[key] = {prod:'Caja Mixta de Alfajores', label:sabor, qty:nuevaCant, unit:'und', precio:1350, subtotal:nuevaCant*1350};
+  const el = document.getElementById('cat-qty-mixto_' + sabor.replace(/ /g,'_'));
+  if (el) el.textContent = nuevaCant;
+  // Mostrar aviso de cuántos faltan
+  const sumTotal = SABORES_ALFAJOR.reduce((acc,s) => acc+(catCarrito['mixto_'+s]?.qty||0), 0);
+  const aviso = document.getElementById('mixto-aviso');
+  if (aviso) {
+    if (sumTotal < total) { aviso.style.display='block'; aviso.textContent=`Faltan ${total-sumTotal} unidades por elegir`; aviso.style.color='var(--mm-muted)'; }
+    else { aviso.style.display='none'; }
+  }
   updateCartBar();
 }
 
@@ -422,7 +532,7 @@ function catQty(prod, label, precio, qtyPack, unit, delta) {
 }
 
 function updateCartBar() {
-  const items = Object.values(catCarrito);
+  const items = Object.values(catCarrito).filter(i => i.prod && i.qty > 0);
   const total = items.reduce((s, i) => s + i.qty * i.precio, 0);
   const count = items.reduce((s, i) => s + i.qty, 0);
   const bar = document.getElementById('cat-cart-bar');
@@ -438,12 +548,12 @@ function updateCartBar() {
 }
 
 function initCheckout() {
-  const items = Object.values(catCarrito);
+  const items = Object.values(catCarrito).filter(i => i.prod && i.qty > 0);
   const total = items.reduce((s, i) => s + i.qty * i.precio, 0);
   const resumen = document.getElementById('cat-resumen-items');
   resumen.innerHTML = items.map(i => `
     <div class="cat-resumen-item">
-      <span>${i.qty}x ${i.label} ${i.prod}</span>
+      <span>${i.qty}x ${i.label||i.prod}${i.prod!==i.label&&i.label?(' — '+i.prod):''}</span>
       <span style="font-family:'Space Mono',monospace;font-size:12px;">$${(i.qty*i.precio).toLocaleString('es-CO')}</span>
     </div>`).join('');
   document.getElementById('cat-resumen-total-val').textContent = '$' + total.toLocaleString('es-CO');
@@ -470,9 +580,11 @@ async function enviarPedidoCliente() {
   if (!tel) { alert('Pon tu teléfono'); return; }
   if (!dir) { alert('Pon tu dirección de entrega'); return; }
 
-  const items = Object.values(catCarrito).map(i => ({
-    prod: i.prod, label: i.label, qty: i.qty, unit: i.unit, precio: i.precio, subtotal: i.qty * i.precio
-  }));
+  const items = Object.values(catCarrito)
+    .filter(i => i.prod && i.qty > 0)
+    .map(i => ({
+      prod: i.prod, label: i.label||i.prod, qty: i.qty, unit: i.unit||'und', precio: i.precio, subtotal: i.qty * i.precio
+    }));
   const total = items.reduce((s, i) => s + i.subtotal, 0);
 
   const pedido = {
@@ -506,6 +618,12 @@ async function enviarPedidoCliente() {
 function resetCatalogo() {
   catCarrito = {};
   closeModal('cat-checkout');
+  renderCatalogo();
+}
+
+// Update CATALOGO_INFO img when photos are added
+function setCatalogoImg(producto, url) {
+  if (CATALOGO_INFO[producto]) CATALOGO_INFO[producto].img = url;
   renderCatalogo();
 }
 
