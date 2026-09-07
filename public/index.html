@@ -354,7 +354,25 @@ Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
 
 let PRECIOS_MAP = JSON.parse(localStorage.getItem('mm_precios_v2') || JSON.stringify(PRECIOS_DEFAULT));
 
-function guardarPrecios() { localStorage.setItem('mm_precios_v2', JSON.stringify(PRECIOS_MAP)); }
+// Extras con precio editable
+const EXTRAS_CONFIG = [
+  {key:'salsa_milo', label:'Salsa de Milo'},
+  {key:'salsa_arequipe', label:'Salsa de Arequipe'}
+];
+
+let PRECIOS_EXTRAS = JSON.parse(localStorage.getItem('mm_precios_extras') || JSON.stringify({
+  'salsa_milo': 0,
+  'salsa_arequipe': 0
+}));
+
+function guardarPrecios() {
+  localStorage.setItem('mm_precios_v2', JSON.stringify(PRECIOS_MAP));
+  localStorage.setItem('mm_precios_extras', JSON.stringify(PRECIOS_EXTRAS));
+}
+
+function getPrecioExtra(key) {
+  return PRECIOS_EXTRAS[key] || 0;
+}
 
 function getPrecioPaquete(producto, label) {
   return (PRECIOS_MAP[producto] && PRECIOS_MAP[producto][label]) || 0;
@@ -443,7 +461,7 @@ function openModal(id) {
 
 function initPrecioEditor() {
   const cont = document.getElementById('precio-editor-rows');
-  cont.innerHTML = Object.entries(PAQUETES_CONFIG).map(([prod, packs]) => `
+  const productosHtml = Object.entries(PAQUETES_CONFIG).map(([prod, packs]) => `
     <div style="background:white;border:0.5px solid var(--mm-border);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
       <div style="font-weight:500;font-size:14px;color:var(--mm-vino);margin-bottom:10px;">${prod}</div>
       ${packs.map(pk => {
@@ -459,15 +477,39 @@ function initPrecioEditor() {
         </div>`;
       }).join('')}
     </div>`).join('');
+
+  const extrasHtml = `
+    <div style="background:#fbeaf0;border:0.5px solid var(--mm-frambuesa);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+      <div style="font-weight:500;font-size:14px;color:var(--mm-frambuesa);margin-bottom:4px;">Extras y salsas</div>
+      <div style="font-size:11px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:12px;">Se suma al total del pedido automáticamente</div>
+      ${EXTRAS_CONFIG.map(ex => {
+        const val = getPrecioExtra(ex.key) || '';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:13px;color:var(--mm-text);flex:1;">${ex.label}</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--mm-muted);">$</span>
+            <input class="form-input" type="number" inputmode="numeric" placeholder="0"
+              value="${val}" data-extra="${ex.key}"
+              style="width:100px;padding:7px 10px;font-size:14px;text-align:right;">
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  cont.innerHTML = productosHtml + extrasHtml;
 }
 
 function guardarPreciosModal() {
-  document.querySelectorAll('#precio-editor-rows input').forEach(inp => {
+  document.querySelectorAll('#precio-editor-rows input[data-prod]').forEach(inp => {
     const prod = inp.dataset.prod;
     const label = inp.dataset.label;
     const val = parseInt(inp.value) || 0;
     if (!PRECIOS_MAP[prod]) PRECIOS_MAP[prod] = {};
     PRECIOS_MAP[prod][label] = val;
+  });
+  document.querySelectorAll('#precio-editor-rows input[data-extra]').forEach(inp => {
+    const key = inp.dataset.extra;
+    PRECIOS_EXTRAS[key] = parseInt(inp.value) || 0;
   });
   guardarPrecios();
   closeModal('editar-precios');
@@ -638,12 +680,21 @@ function catQty(prod, label, precio, qtyPack, unit, delta) {
 
 function setExtraCookie(extra) {
   catCarrito['extra_cookies'] = extra;
+  // Si no es "Sin extra", agregar al carrito como item extra
+  if (extra !== 'Sin extra') {
+    const key = EXTRAS_CONFIG.find(e => e.label === extra);
+    if (key) catCarrito['extra_precio'] = { key: key.key, label: extra, precio: getPrecioExtra(key.key) };
+    else delete catCarrito['extra_precio'];
+  } else {
+    delete catCarrito['extra_precio'];
+  }
   renderCatalogo();
 }
 
 function updateCartBar() {
   const items = Object.values(catCarrito).filter(i => i.prod && i.qty > 0);
-  const total = items.reduce((s, i) => s + i.qty * i.precio, 0);
+  const extraPrecio = catCarrito['extra_precio']?.precio || 0;
+  const total = items.reduce((s, i) => s + i.qty * i.precio, 0) + extraPrecio;
   const count = items.reduce((s, i) => s + i.qty, 0);
   const bar = document.getElementById('cat-cart-bar');
   const label = document.getElementById('cat-cart-label');
@@ -695,6 +746,8 @@ async function enviarPedidoCliente() {
     .map(i => ({
       prod: i.prod, label: i.label||i.prod, qty: i.qty, unit: i.unit||'und', precio: i.precio, subtotal: i.qty * i.precio
     }));
+  const extraItem = catCarrito['extra_precio'];
+  if (extraItem) items.push({prod:'Extra', label:extraItem.label, qty:1, unit:'und', precio:extraItem.precio, subtotal:extraItem.precio});
   const total = items.reduce((s, i) => s + i.subtotal, 0);
 
   const pedido = {
