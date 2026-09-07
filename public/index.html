@@ -906,22 +906,28 @@ function renderCocinar() {
 }
 function addToCalendar(){const cliente=document.getElementById('np-cliente').value.trim()||'Pedido';const fecha=document.getElementById('np-fecha').value;if(!fecha){alert('Pon la fecha de entrega primero');return;}const d=fecha.replace(/-/g,'');window.open(`https://calendar.google.com/calendar/event?action=TEMPLATE&dates=${d}/${d}&text=${encodeURIComponent('More Mío · '+cliente)}&details=${encodeURIComponent('Pedido para '+cliente)}`,'_blank');}
 
-// Modo admin: solo si la URL tiene ?admin o si está en modo normal (no /catalogo)
-const esAdmin = !window.location.pathname.includes('catalogo') && 
-                (window.location.search.includes('admin') || 
-                 !window.location.pathname.includes('catalogo'));
-if (esAdmin) {
-  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-  // Mostrar todas las pestañas admin
-  document.querySelectorAll('.nav-btn:not(.admin-only)').forEach(el => el.style.display = 'flex');
-} else {
-  // Solo mostrar catálogo
-  document.querySelectorAll('.nav-btn').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('#screen-catalogo').forEach(el => el.classList.add('active'));
-}
+// Modo cliente: URL tiene ?catalogo → ocultar todo admin
+const esModoCliente = window.location.search.includes('catalogo');
 
-renderPedidos();
-renderRecetas();
+if (esModoCliente) {
+  // Ocultar nav completamente
+  document.querySelector('.nav').style.display = 'none';
+  // Ocultar todas las pantallas admin
+  ['screen-pedidos','screen-recetas','screen-cocinar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // Mostrar solo catálogo
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const cat = document.getElementById('screen-catalogo');
+  if (cat) { cat.classList.add('active'); cat.style.display = 'block'; }
+  renderCatalogo();
+} else {
+  // Modo admin: mostrar pestaña Precios
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+  renderPedidos();
+  renderRecetas();
+}
 </script>
 </body>
 </html>
