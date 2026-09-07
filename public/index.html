@@ -151,6 +151,7 @@
     <button class="nav-btn" onclick="showScreen('recetas',this)"><i class="ti ti-book"></i>Recetas</button>
     <button class="nav-btn" onclick="showScreen('cocinar',this)"><i class="ti ti-chef-hat"></i>Cocinar</button>
     <button class="nav-btn" onclick="showScreen('catalogo',this)"><i class="ti ti-storefront"></i>Catálogo</button>
+    <button class="nav-btn" onclick="openModal('editar-precios')"><i class="ti ti-tag"></i>Precios</button>
   </nav>
 
   <!-- PEDIDOS -->
@@ -308,6 +309,17 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <!-- MODAL EDITAR PRECIOS -->
+  <div class="modal-overlay" id="modal-editar-precios">
+    <div class="modal-box">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Precios <button class="close-btn" onclick="closeModal('editar-precios')">×</button></div>
+      <p style="font-size:12px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:16px;">PRECIO POR UNIDAD · Los totales se calculan solos</p>
+      <div id="precio-editor-rows"></div>
+      <button class="btn-primary" onclick="guardarPreciosModal()" style="margin-top:8px;">Guardar precios</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -315,37 +327,55 @@ const RECETAS_DEFAULT = [
   { producto:'Brownie milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:115,unidad:'g'},{nombre:'Milo',cantidad:100,unidad:'g'},{nombre:'Mantequilla',cantidad:100,unidad:'g'},{nombre:'Azúcar morena',cantidad:90,unidad:'g'},{nombre:'Azúcar blanca',cantidad:95,unidad:'g'},{nombre:'Huevos',cantidad:2,unidad:'und'},{nombre:'Sal',cantidad:5,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:1,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:2.5,unidad:'g'}] },
   { producto:'Brownie stevia', base:24, ingredientes:[{nombre:'Harina de avena',cantidad:50,unidad:'g'},{nombre:'Harina de almendra',cantidad:50,unidad:'g'},{nombre:'Cacao en polvo',cantidad:40,unidad:'g'},{nombre:'Stevia',cantidad:110,unidad:'g'},{nombre:'Huevos',cantidad:4,unidad:'und'},{nombre:'Aceite de coco',cantidad:95,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:4,unidad:'ml'},{nombre:'Sal',cantidad:1,unidad:'pizca'}] },
   { producto:'Alfajores arequipe', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:150,unidad:'g'},{nombre:'Maicena',cantidad:200,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:2,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:4,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Arequipe (relleno)',cantidad:1,unidad:'und'}] },
-  { producto:'Alfajores milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:200,unidad:'g'},{nombre:'Maicena',cantidad:150,unidad:'g'},{nombre:'Milo en polvo',cantidad:60,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:3,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Milo untable (relleno)',cantidad:1,unidad:'und'}] }
+  { producto:'Alfajores milo', base:24, ingredientes:[{nombre:'Harina de trigo',cantidad:200,unidad:'g'},{nombre:'Maicena',cantidad:150,unidad:'g'},{nombre:'Milo en polvo',cantidad:60,unidad:'g'},{nombre:'Azúcar pulverizada',cantidad:80,unidad:'g'},{nombre:'Mantequilla fría',cantidad:150,unidad:'g'},{nombre:'Yemas de huevo',cantidad:3,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Milo untable (relleno)',cantidad:1,unidad:'und'}] },
+  { producto:'Galleta de Milo', base:10, ingredientes:[{nombre:'Harina de trigo',cantidad:500,unidad:'g'},{nombre:'Milo en polvo',cantidad:67,unidad:'g'},{nombre:'Mantequilla al clima',cantidad:133,unidad:'g'},{nombre:'Azúcar granulada',cantidad:100,unidad:'g'},{nombre:'Huevos',cantidad:2,unidad:'und'},{nombre:'Polvo de hornear',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:2,unidad:'pizca'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'ml'},{nombre:'Milo relleno',cantidad:1,unidad:'und'}] },
+  { producto:'Mini cookies chocochips', base:50, ingredientes:[{nombre:'Mantequilla temperatura ambiente',cantidad:60,unidad:'g'},{nombre:'Azúcar morena',cantidad:45,unidad:'g'},{nombre:'Azúcar blanca',cantidad:25,unidad:'g'},{nombre:'Huevo',cantidad:1,unidad:'und'},{nombre:'Esencia de vainilla',cantidad:1,unidad:'tsp'},{nombre:'Harina de trigo',cantidad:120,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'},{nombre:'Polvo de hornear',cantidad:2,unidad:'g'},{nombre:'Chispas de chocolate',cantidad:70,unidad:'g'}] },
+  { producto:'Rice crispy', base:12, ingredientes:[{nombre:'Arroz inflado',cantidad:180,unidad:'g'},{nombre:'Mantequilla',cantidad:45,unidad:'g'},{nombre:'Malvaviscos',cantidad:300,unidad:'g'},{nombre:'Esencia de vainilla',cantidad:5,unidad:'g'},{nombre:'Sal',cantidad:1,unidad:'pizca'}] }
 ];
 
-// Precio por unidad de cada producto
-const PRECIO_UNIT = {
-  'Brownie milo': 1500,
-  'Brownie stevia': 2000,
-  'Alfajores arequipe': 1200,
-  'Alfajores milo': 1500
-};
+// Precios por producto — edítalos desde la herramienta de precios en la app
+let PRECIO_UNIT = JSON.parse(localStorage.getItem('mm_precios') || JSON.stringify({
+  'Brownie milo': 0,
+  'Brownie stevia': 0,
+  'Alfajores arequipe': 0,
+  'Alfajores milo': 0,
+  'Galleta de Milo': 0,
+  'Mini cookies chocochips': 0,
+  'Rice crispy': 0,
+  'Caja Mixta de Alfajores': 0
+}));
 
-// Opciones de cantidad estándar para todos los productos
+function guardarPrecios() { localStorage.setItem('mm_precios', JSON.stringify(PRECIO_UNIT)); }
+
+// Opciones de cantidad estándar
 const CANTIDADES = [
-  {label:'1 unidad', qty:1, unit:'und'},
-  {label:'4 unidades', qty:4, unit:'und'},
-  {label:'8 unidades', qty:8, unit:'und'},
-  {label:'10 unidades', qty:10, unit:'und'},
+  {label:'6 unidades', qty:6, unit:'und'},
   {label:'12 unidades', qty:12, unit:'und'},
   {label:'24 unidades', qty:24, unit:'und'}
 ];
 
-// Sabores disponibles para mixtos
+// Cantidades especiales para Mini cookies y Rice crispy
+const CANTIDADES_COOKIES = [
+  {label:'25 unidades', qty:25, unit:'und'},
+  {label:'50 unidades', qty:50, unit:'und'}
+];
+
+const CANTIDADES_RICE = [
+  {label:'6 unidades', qty:6, unit:'und'},
+  {label:'12 unidades', qty:12, unit:'und'}
+];
+
+// Extras para Mini cookies
+const EXTRAS_COOKIES = ['Sin extra', 'Salsa de Milo', 'Salsa de Arequipe'];
+
+// Sabores Rice crispy
+const SABORES_RICE = ['Clásico', 'Chocolate'];
+
+// Sabores Alfajores mixtos
 const SABORES_ALFAJOR = ['Arequipe', 'Milo', 'Chips chocolate'];
 
 function getPrecioOpcion(producto, qty) {
-  const precioUnit = PRECIO_UNIT[producto] || 1500;
-  // Descuentos por volumen para paquetes
-  if (qty >= 24) return Math.round(precioUnit * qty * 0.85);
-  if (qty >= 12) return Math.round(precioUnit * qty * 0.88);
-  if (qty >= 8) return Math.round(precioUnit * qty * 0.92);
-  if (qty >= 4) return Math.round(precioUnit * qty * 0.95);
+  const precioUnit = PRECIO_UNIT[producto] || 0;
   return precioUnit * qty;
 }
 
@@ -353,7 +383,10 @@ const CATALOGO_INFO = {
   'Brownie milo': { desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
   'Brownie stevia': { desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.', img:null },
   'Alfajores arequipe': { desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.', img:null },
-  'Alfajores milo': { desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null }
+  'Alfajores milo': { desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null },
+  'Galleta de Milo': { desc:'Galleta suave y crocante con doble esencia de Milo: en la masa y en el relleno. Grande, generosa y llena de sabor a chocolate malteado.', img:null },
+  'Mini cookies chocochips': { desc:'Mini cookies crocantes con chispas de chocolate en cada bocado. Disponibles con salsa de Milo o arequipe para que las disfrutes al máximo.', img:null },
+  'Rice crispy': { desc:'Cuadros de arroz inflado con malvaviscos, suaves por dentro y crujientes por fuera. Disponibles en versión clásica y chocolate. Un clásico irresistible.', img:null }
 };
 
 function getCatalogo() {
@@ -410,8 +443,36 @@ function showScreen(id, btn) {
 function openModal(id) {
   if (id === 'nuevo-pedido') initNuevoPedido();
   if (id === 'cat-checkout') initCheckout();
+  if (id === 'editar-precios') initPrecioEditor();
   document.getElementById('modal-' + id).classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function initPrecioEditor() {
+  const prods = Object.keys(PRECIO_UNIT);
+  const cont = document.getElementById('precio-editor-rows');
+  cont.innerHTML = prods.map(p => `
+    <div class="form-group">
+      <label class="form-label">${p}</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Space Mono',monospace;font-size:13px;color:var(--mm-muted);">$</span>
+        <input class="form-input" type="number" inputmode="numeric" placeholder="0"
+          value="${PRECIO_UNIT[p]||''}" data-prod="${p}"
+          style="flex:1;">
+      </div>
+    </div>`).join('');
+}
+
+function guardarPreciosModal() {
+  document.querySelectorAll('#precio-editor-rows input').forEach(inp => {
+    const prod = inp.dataset.prod;
+    const val = parseInt(inp.value) || 0;
+    PRECIO_UNIT[prod] = val;
+  });
+  guardarPrecios();
+  closeModal('editar-precios');
+  showToast('✓ Precios actualizados');
+  renderCatalogo();
 }
 function closeModal(id) {
   document.getElementById('modal-' + id).classList.remove('open');
@@ -453,20 +514,64 @@ function renderCatalogo() {
           <div id="mixto-aviso" style="font-size:11px;color:var(--mm-frambuesa);font-family:'Space Mono',monospace;margin-top:8px;display:none;"></div>
         </div>`;
     } else {
-      opcionesHtml = CANTIDADES.map(op => {
-        const precio = getPrecioOpcion(p.nombre, op.qty);
-        const key = p.nombre + '||' + op.label;
-        const qty = catCarrito[key]?.qty || 0;
-        return `<div class="cat-price-row">
-          <span class="cat-price-label">${op.label}</span>
-          <span class="cat-price-amount">$${precio.toLocaleString('es-CO')}</span>
-          <div class="cat-qty-wrap">
-            <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',-1)">−</button>
-            <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
-            <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',1)">+</button>
+      // Elegir set de cantidades según producto
+      let cantSet = CANTIDADES;
+      if (p.nombre === 'Mini cookies chocochips') cantSet = CANTIDADES_COOKIES;
+      else if (p.nombre === 'Rice crispy') cantSet = CANTIDADES_RICE;
+
+      // Extras para cookies
+      let extrasHtml = '';
+      if (p.nombre === 'Mini cookies chocochips') {
+        const extraSel = catCarrito['extra_cookies'] || 'Sin extra';
+        extrasHtml = `<div style="margin:10px 0 6px;">
+          <div style="font-size:11px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:6px;">EXTRA (OPCIONAL)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${EXTRAS_COOKIES.map(e => `<button onclick="setExtraCookie('${e}')" style="padding:6px 10px;border-radius:20px;border:0.5px solid var(--mm-frambuesa);background:${extraSel===e?'var(--mm-frambuesa)':'white'};color:${extraSel===e?'white':'var(--mm-frambuesa)'};font-size:11px;font-family:'Space Mono',monospace;cursor:pointer;">${e}</button>`).join('')}
           </div>
         </div>`;
-      }).join('');
+      }
+
+      // Sabores para Rice crispy
+      let saboresRiceHtml = '';
+      if (p.nombre === 'Rice crispy') {
+        saboresRiceHtml = `<div style="margin:10px 0 6px;">
+          <div style="font-size:11px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:6px;">SABOR</div>
+          <div style="display:flex;gap:6px;">
+            ${SABORES_RICE.map(s => {
+              const key = 'Rice crispy||'+s;
+              const qty = catCarrito[key]?.qty || 0;
+              return `<div style="flex:1;background:white;border:0.5px solid var(--mm-border);border-radius:10px;padding:10px;text-align:center;">
+                <div style="font-size:13px;font-weight:500;margin-bottom:8px;">${s}</div>
+                <div class="cat-qty-wrap" style="justify-content:center;">
+                  <button class="cat-qty-btn" onclick="catQty('Rice crispy','${s}',${getPrecioOpcion('Rice crispy',1)},1,'und',-1)">−</button>
+                  <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
+                  <button class="cat-qty-btn" onclick="catQty('Rice crispy','${s}',${getPrecioOpcion('Rice crispy',1)},1,'und',1)">+</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }
+
+      if (p.nombre === 'Rice crispy') {
+        opcionesHtml = saboresRiceHtml;
+      } else {
+        opcionesHtml = (p.nombre === 'Mini cookies chocochips' ? extrasHtml : '') + cantSet.map(op => {
+          const precio = getPrecioOpcion(p.nombre, op.qty);
+          const key = p.nombre + '||' + op.label;
+          const qty = catCarrito[key]?.qty || 0;
+          const precioStr = precio > 0 ? '$'+precio.toLocaleString('es-CO') : 'Consultar';
+          return `<div class="cat-price-row">
+            <span class="cat-price-label">${op.label}</span>
+            <span class="cat-price-amount">${precioStr}</span>
+            <div class="cat-qty-wrap">
+              <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',-1)">−</button>
+              <span class="cat-qty-num" id="cat-qty-${btoa(key).replace(/=/g,'')}">${qty}</span>
+              <button class="cat-qty-btn" onclick="catQty('${p.nombre}','${op.label}',${precio},${op.qty},'${op.unit}',1)">+</button>
+            </div>
+          </div>`;
+        }).join('') + (p.nombre === 'Mini cookies chocochips' ? '' : '');
+      }
     }
 
     return `<div class="cat-product-card">
@@ -529,6 +634,11 @@ function catQty(prod, label, precio, qtyPack, unit, delta) {
   if (el) el.textContent = catCarrito[key].qty;
   if (catCarrito[key].qty === 0) delete catCarrito[key];
   updateCartBar();
+}
+
+function setExtraCookie(extra) {
+  catCarrito['extra_cookies'] = extra;
+  renderCatalogo();
 }
 
 function updateCartBar() {
