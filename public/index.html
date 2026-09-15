@@ -360,15 +360,48 @@ Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
   packs.forEach(p => { PRECIOS_DEFAULT[prod][p.label] = 0; });
 });
 
-// Cargar precios guardados y fusionar con la config actual (por si cambió)
-const storedPrecios = JSON.parse(localStorage.getItem('mm_precios_v2') || '{}');
+// PRECIOS_MAP — se carga desde el servidor, localStorage solo como caché
 let PRECIOS_MAP = {};
-Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
-  PRECIOS_MAP[prod] = {};
-  packs.forEach(pk => {
-    PRECIOS_MAP[prod][pk.label] = (storedPrecios[prod] && storedPrecios[prod][pk.label]) || 0;
+
+function buildPreciosVacios() {
+  const m = {};
+  Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
+    m[prod] = {};
+    packs.forEach(pk => { m[prod][pk.label] = 0; });
   });
-});
+  return m;
+}
+
+async function cargarPrecios() {
+  // 1. Mostrar caché local mientras carga
+  const cached = localStorage.getItem('mm_precios_v3');
+  PRECIOS_MAP = cached ? JSON.parse(cached) : buildPreciosVacios();
+  // Fusionar con config actual por si hay productos nuevos
+  Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
+    if (!PRECIOS_MAP[prod]) PRECIOS_MAP[prod] = {};
+    packs.forEach(pk => {
+      if (PRECIOS_MAP[prod][pk.label] === undefined) PRECIOS_MAP[prod][pk.label] = 0;
+    });
+  });
+
+  // 2. Pedir al servidor
+  try {
+    const res = await fetch('/api/precios');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.precios) {
+        // Fusionar con config actual
+        Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
+          PRECIOS_MAP[prod] = {};
+          packs.forEach(pk => {
+            PRECIOS_MAP[prod][pk.label] = (data.precios[prod] && data.precios[prod][pk.label]) || 0;
+          });
+        });
+        localStorage.setItem('mm_precios_v3', JSON.stringify(PRECIOS_MAP));
+      }
+    }
+  } catch(e) { console.log('Usando precios en caché'); }
+}
 
 // Extras con precio editable
 const EXTRAS_CONFIG = [
@@ -381,9 +414,18 @@ let PRECIOS_EXTRAS = JSON.parse(localStorage.getItem('mm_precios_extras') || JSO
   'salsa_arequipe': 0
 }));
 
-function guardarPrecios() {
-  localStorage.setItem('mm_precios_v2', JSON.stringify(PRECIOS_MAP));
+async function guardarPrecios() {
+  // Guardar en localStorage como caché
+  localStorage.setItem('mm_precios_v3', JSON.stringify(PRECIOS_MAP));
   localStorage.setItem('mm_precios_extras', JSON.stringify(PRECIOS_EXTRAS));
+  // Guardar en servidor (Google Sheets)
+  try {
+    await fetch('/api/precios', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ precios: PRECIOS_MAP })
+    });
+  } catch(e) { console.error('Error guardando precios:', e); }
 }
 
 function getPrecioExtra(key) {
@@ -519,7 +561,7 @@ function initPrecioEditor() {
   cont.innerHTML = productosHtml + extrasHtml;
 }
 
-function guardarPreciosModal() {
+async function guardarPreciosModal() {
   document.querySelectorAll('#precio-editor-rows input[data-prod]').forEach(inp => {
     const prod = inp.dataset.prod;
     const label = inp.dataset.label;
@@ -531,9 +573,10 @@ function guardarPreciosModal() {
     const key = inp.dataset.extra;
     PRECIOS_EXTRAS[key] = parseInt(inp.value) || 0;
   });
-  guardarPrecios();
+  showToast('Guardando precios...');
+  await guardarPrecios();
   closeModal('editar-precios');
-  showToast('✓ Precios actualizados');
+  showToast('✓ Precios actualizados para todos');
   renderCatalogo();
 }
 function closeModal(id) {
@@ -1008,25 +1051,24 @@ function addToCalendar(){const cliente=document.getElementById('np-cliente').val
 // Modo cliente: URL tiene ?catalogo → ocultar todo admin
 const esModoCliente = window.location.search.includes('catalogo');
 
-if (esModoCliente) {
-  // Ocultar nav completamente
-  document.querySelector('.nav').style.display = 'none';
-  // Ocultar todas las pantallas admin
-  ['screen-pedidos','screen-recetas','screen-cocinar'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  // Mostrar solo catálogo
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const cat = document.getElementById('screen-catalogo');
-  if (cat) { cat.classList.add('active'); cat.style.display = 'block'; }
-  renderCatalogo();
-} else {
-  // Modo admin: mostrar pestaña Precios
-  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-  renderPedidos();
-  renderRecetas();
-}
+// Cargar precios desde servidor al iniciar
+cargarPrecios().then(() => {
+  if (esModoCliente) {
+    document.querySelector('.nav').style.display = 'none';
+    ['screen-pedidos','screen-recetas','screen-cocinar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const cat = document.getElementById('screen-catalogo');
+    if (cat) { cat.classList.add('active'); cat.style.display = 'block'; }
+    renderCatalogo();
+  } else {
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+    renderPedidos();
+    renderRecetas();
+  }
+});
 </script>
 </body>
 </html>
