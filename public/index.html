@@ -335,14 +335,22 @@ const RECETAS_DEFAULT = [
 
 // Paquetes por producto con sus precios editables
 const PAQUETES_CONFIG = {
-  'Brownie milo':          [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
-  'Brownie stevia':        [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
-  'Alfajores arequipe':    [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
-  'Alfajores milo':        [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
-  'Galleta de Milo':       [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
-  'Mini cookies chocochips':[{label:'25 unidades',qty:25},{label:'50 unidades',qty:50}],
-  'Rice crispy':           [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12}],
-  'Caja Mixta de Alfajores':[{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}]
+  'Brownie milo':            [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Brownie stevia':          [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Alfajores arequipe':      [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Alfajores milo':          [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Galleta de Milo':         [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Mini cookies chocochips': [{label:'25 unidades',qty:25},{label:'50 unidades',qty:50}],
+  'Rice crispy':             [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12}],
+  'Caja Mixta de Alfajores': [{label:'6 unidades',qty:6},{label:'12 unidades',qty:12},{label:'24 unidades',qty:24}],
+  'Postre de Limon':         [{label:'1 unidad',qty:1},{label:'6 unidades',qty:6},{label:'12 unidades',qty:12}],
+  'Postre de Milo':          [{label:'1 unidad',qty:1},{label:'6 unidades',qty:6},{label:'12 unidades',qty:12}],
+  'Cupcake de vainilla':     [{label:'1 unidad',qty:1},{label:'Caja x6',qty:6}],
+  'Cupcake red velvet':      [{label:'1 unidad',qty:1},{label:'Caja x6',qty:6}],
+  'Cupcake de chocolate':    [{label:'1 unidad',qty:1},{label:'Caja x6',qty:6}],
+  'Caja x6 Cupcakes Mixtos': [{label:'Caja x6',qty:6}],
+  'Pave de Leche Klim':      [{label:'1 unidad',qty:1},{label:'6 unidades',qty:6}],
+  'Pave de Milo':            [{label:'1 unidad',qty:1},{label:'6 unidades',qty:6}]
 };
 
 // Precios editables: producto -> label -> precio
@@ -391,32 +399,36 @@ const SABORES_ALFAJOR = ['Arequipe', 'Milo', 'Chips chocolate'];
 function getPrecioOpcion(producto, qty) { return 0; } // legacy compat
 
 const CATALOGO_INFO = {
-  'Brownie milo': { desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.', img:null },
-  'Brownie stevia': { desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.', img:null },
-  'Alfajores arequipe': { desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.', img:null },
-  'Alfajores milo': { desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.', img:null },
-  'Galleta de Milo': { desc:'Galleta suave y crocante con doble esencia de Milo: en la masa y en el relleno. Grande, generosa y llena de sabor a chocolate malteado.', img:null },
-  'Mini cookies chocochips': { desc:'Mini cookies crocantes con chispas de chocolate en cada bocado. Disponibles con salsa de Milo o arequipe para que las disfrutes al máximo.', img:null },
-  'Rice crispy': { desc:'Cuadros de arroz inflado con malvaviscos, suaves por dentro y crujientes por fuera. Disponibles en versión clásica y chocolate. Un clásico irresistible.', img:null }
+  'Brownie milo':           {desc:'Ponquecito de brownie con esencia de Milo. Húmedo por dentro, con costra crujiente y sabor a chocolate malteado. Irresistible.',img:null},
+  'Brownie stevia':         {desc:'Brownie artesanal sin azúcar refinada, endulzado con stevia. Ideal si buscas disfrutar sin culpa. 100% sabor, 0% arrepentimiento.',img:null},
+  'Alfajores arequipe':     {desc:'Galletas artesanales suaves rellenas de arequipe. Receta tradicional con ingredientes seleccionados. El sabor de siempre, hecho con amor.',img:null},
+  'Alfajores milo':         {desc:'Alfajores premium con masa de Milo y relleno de crema de Milo untable. Una combinación que enamora a los amantes del chocolate.',img:null},
+  'Galleta de Milo':        {desc:'Galleta suave y crocante con doble esencia de Milo: en la masa y en el relleno. Grande, generosa y llena de sabor a chocolate malteado.',img:null},
+  'Mini cookies chocochips':{desc:'Mini cookies crocantes con chispas de chocolate en cada bocado. Disponibles con salsa de Milo o arequipe.',img:null},
+  'Rice crispy':            {desc:'Cuadros de arroz inflado con malvaviscos, suaves por dentro y crujientes por fuera. Clásico o chocolate.',img:null},
+  'Postre de Limon':        {desc:'Postre artesanal de limón con textura cremosa y sabor cítrico refrescante. Fresco, suave y con el toque perfecto de dulce.',img:null},
+  'Postre de Milo':         {desc:'Postre cremoso con esencia de Milo en cada capa. Suave, goloso y con ese sabor a chocolate malteado que todos amamos.',img:null},
+  'Cupcake de vainilla':    {desc:'Cupcake esponjoso de vainilla con frosting suave. Clásico, delicado y perfecto para celebrar cualquier momento especial.',img:null},
+  'Cupcake red velvet':     {desc:'Cupcake red velvet con su característico color rojo intenso y frosting de queso crema. Elegante, húmedo y con un sabor único.',img:null},
+  'Cupcake de chocolate':   {desc:'Cupcake de chocolate intenso con frosting cremoso. Para los amantes del chocolate que no se conforman con poco.',img:null},
+  'Caja x6 Cupcakes Mixtos':{desc:'Arma tu caja de 6 cupcakes eligiendo los sabores que quieras: vainilla, red velvet o chocolate. La combinación perfecta para compartir.',img:null,esMixto:true,tipoMixto:'cupcakes'},
+  'Pave de Leche Klim':     {desc:'Pave artesanal con capas de galleta, crema de Leche Klim y manjar. Cremoso, suave y con ese sabor nostálgico que enamora.',img:null},
+  'Pave de Milo':           {desc:'Pave de Milo con capas de galleta, crema de chocolate malteado y toppings crujientes. Irresistible para los fanáticos del Milo.',img:null}
 };
 
+const SABORES_CUPCAKE = ['Vainilla', 'Red velvet', 'Chocolate'];
+
 function getCatalogo() {
-  // Dinámico: toma las recetas guardadas + siempre agrega Mixtos al final
-  const prods = recetas.length ? recetas : RECETAS_DEFAULT;
-  const items = prods.map(r => ({
-    nombre: r.producto,
-    desc: CATALOGO_INFO[r.producto]?.desc || 'Producto artesanal More Mío hecho con amor.',
-    img: CATALOGO_INFO[r.producto]?.img || null,
-    esMixto: false
-  }));
-  // Agregar Mixtos al final siempre
-  items.push({
-    nombre: 'Caja Mixta de Alfajores',
-    desc: 'Arma tu caja a tu gusto. Elige la cantidad total y selecciona cuántos de cada sabor quieres: Arequipe, Milo y Chips chocolate.',
-    img: null,
-    esMixto: true
+  return Object.keys(PAQUETES_CONFIG).map(nombre => {
+    const info = CATALOGO_INFO[nombre] || {};
+    return {
+      nombre,
+      desc: info.desc || 'Producto artesanal More Mio hecho con amor.',
+      img: info.img || null,
+      esMixto: info.esMixto || false,
+      tipoMixto: info.tipoMixto || null
+    };
   });
-  return items;
 }
 
 const ESTADOS = [
@@ -537,7 +549,7 @@ function renderCatalogo() {
         <div style="background:#fbeaf0;border-radius:10px;padding:12px;margin-bottom:10px;">
           <div style="font-size:12px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:8px;">CANTIDAD TOTAL</div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="mixto-qty-opts">
-            ${[4,8,10,12,24].map(q => `<button class="mixto-qty-btn ${catCarrito['mixto_total']===q?'sel':''}" onclick="setMixtoQty(${q})" style="padding:6px 12px;border-radius:20px;border:0.5px solid var(--mm-frambuesa);background:${catCarrito['mixto_total']===q?'var(--mm-frambuesa)':'white'};color:${catCarrito['mixto_total']===q?'white':'var(--mm-frambuesa)'};font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;">${q} und</button>`).join('')}
+            ${[6,12,24].map(q => `<button class="mixto-qty-btn ${catCarrito['mixto_total']===q?'sel':''}" onclick="setMixtoQty(${q})" style="padding:6px 12px;border-radius:20px;border:0.5px solid var(--mm-frambuesa);background:${catCarrito['mixto_total']===q?'var(--mm-frambuesa)':'white'};color:${catCarrito['mixto_total']===q?'white':'var(--mm-frambuesa)'};font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;">${q} und</button>`).join('')}
           </div>
           <div style="font-size:12px;color:var(--mm-muted);font-family:'Space Mono',monospace;margin-bottom:8px;">ELIGE TUS SABORES</div>
           ${SABORES_ALFAJOR.map(s => {
@@ -776,6 +788,32 @@ async function enviarPedidoCliente() {
 
   document.getElementById('cat-paso-1').style.display = 'none';
   document.getElementById('cat-paso-2').style.display = 'block';
+}
+
+function cupcakeMixtoQty(sabor, delta, precioBox) {
+  const MAX = 6;
+  const key = 'cupmixto_' + sabor;
+  const actual = catCarrito[key]?.qty || 0;
+  const sumOtros = SABORES_CUPCAKE.filter(s => s !== sabor).reduce((acc,s) => acc+(catCarrito['cupmixto_'+s]?.qty||0), 0);
+  const nueva = Math.max(0, actual + delta);
+  const aviso = document.getElementById('cupmixto-aviso');
+  if (delta > 0 && sumOtros + nueva > MAX) {
+    if (aviso) { aviso.style.display='block'; aviso.textContent='Maximo 6 cupcakes por caja'; setTimeout(()=>{ if(aviso) aviso.style.display='none'; },2000); }
+    return;
+  }
+  if (nueva === 0) delete catCarrito[key];
+  else {
+    const precioPorUnd = precioBox > 0 ? Math.round(precioBox/MAX) : 0;
+    catCarrito[key] = {prod:'Caja x6 Cupcakes Mixtos', label:sabor+' (cupcake)', qty:nueva, unit:'und', precio:precioPorUnd, subtotal:nueva*precioPorUnd};
+  }
+  const el = document.getElementById('cat-qty-cupmixto_' + sabor);
+  if (el) el.textContent = nueva;
+  const sumTotal = SABORES_CUPCAKE.reduce((acc,s) => acc+(catCarrito['cupmixto_'+s]?.qty||0), 0);
+  if (aviso) {
+    if (sumTotal > 0 && sumTotal < MAX) { aviso.style.display='block'; aviso.textContent='Faltan '+(MAX-sumTotal)+' cupcakes por elegir'; aviso.style.color='var(--mm-muted)'; }
+    else aviso.style.display='none';
+  }
+  updateCartBar();
 }
 
 function resetCatalogo() {
