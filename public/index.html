@@ -576,10 +576,10 @@ function renderCatalogo() {
           <div id="mixto-aviso" style="font-size:11px;color:var(--mm-frambuesa);font-family:'Space Mono',monospace;margin-top:8px;display:none;"></div>
         </div>`;
     } else {
-      // Elegir set de cantidades según producto
-      let cantSet = CANTIDADES;
-      if (p.nombre === 'Mini cookies chocochips') cantSet = CANTIDADES_COOKIES;
-      else if (p.nombre === 'Rice crispy') cantSet = CANTIDADES_RICE;
+      // Cantidades directo desde PAQUETES_CONFIG — la única fuente de verdad
+      let cantSet = (PAQUETES_CONFIG[p.nombre] || CANTIDADES).map(pk => ({
+        label: pk.label, qty: pk.qty, unit: 'und'
+      }));
 
       // Extras para cookies
       let extrasHtml = '';
