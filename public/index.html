@@ -360,7 +360,15 @@ Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
   packs.forEach(p => { PRECIOS_DEFAULT[prod][p.label] = 0; });
 });
 
-let PRECIOS_MAP = JSON.parse(localStorage.getItem('mm_precios_v2') || JSON.stringify(PRECIOS_DEFAULT));
+// Cargar precios guardados y fusionar con la config actual (por si cambió)
+const storedPrecios = JSON.parse(localStorage.getItem('mm_precios_v2') || '{}');
+let PRECIOS_MAP = {};
+Object.entries(PAQUETES_CONFIG).forEach(([prod, packs]) => {
+  PRECIOS_MAP[prod] = {};
+  packs.forEach(pk => {
+    PRECIOS_MAP[prod][pk.label] = (storedPrecios[prod] && storedPrecios[prod][pk.label]) || 0;
+  });
+});
 
 // Extras con precio editable
 const EXTRAS_CONFIG = [
