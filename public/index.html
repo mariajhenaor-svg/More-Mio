@@ -156,7 +156,10 @@
 
   <!-- PEDIDOS -->
   <div id="screen-pedidos" class="screen active">
-    <button class="fab" onclick="openModal('nuevo-pedido')"><i class="ti ti-plus"></i> Nuevo pedido</button>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="fab" style="margin-bottom:0;flex:1;" onclick="openModal('nuevo-pedido')"><i class="ti ti-plus"></i> Nuevo pedido</button>
+    <button onclick="cargarPedidosServidor().then(()=>showToast('✓ Pedidos actualizados'))" style="padding:13px 14px;background:none;border:0.5px solid var(--mm-frambuesa);border-radius:10px;color:var(--mm-frambuesa);cursor:pointer;"><i class="ti ti-refresh" style="font-size:18px;"></i></button>
+  </div>
     <div id="lista-pedidos"><div class="no-pedidos"><i class="ti ti-cake"></i>Aún no hay pedidos.<br>¡Agrega el primero!</div></div>
   </div>
 
@@ -1049,6 +1052,41 @@ function addToCalendar(){const cliente=document.getElementById('np-cliente').val
 // Modo cliente: URL tiene ?catalogo → ocultar todo admin
 const esModoCliente = window.location.search.includes('catalogo');
 
+// Cargar pedidos desde Google Sheets para app admin
+async function cargarPedidosServidor() {
+  try {
+    const res = await fetch('/api/pedidos');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.pedidos && data.pedidos.length) {
+        // Convertir formato servidor a formato app
+        const pedidosServidor = data.pedidos.reverse().map(p => ({
+          id: p.id || Date.now(),
+          cliente: p.cliente || '',
+          dir: p.dir || '',
+          nota: p.nota || '',
+          fecha: p.fecha || '',
+          items: p.productos ? p.productos.split(' | ').map(s => {
+            const parts = s.trim().split(' ');
+            return { qty: parseInt(parts[0])||1, unit: parts[1]||'und', prod: parts.slice(2).join(' '), label: parts.slice(2).join(' ') };
+          }) : [],
+          estado: ['Pendiente comprar','Hacer de cero','Masa lista','Hecho'].indexOf(p.estado),
+          total: p.total || 0,
+          abono: p.abono || 0,
+          pago: p.pago || 'efectivo',
+          origen: p.origen || 'admin'
+        }));
+        // Fusionar con localStorage — el servidor es la fuente de verdad
+        pedidos = pedidosServidor;
+        localStorage.setItem('mm_pedidos', JSON.stringify(pedidos));
+        renderPedidos();
+      }
+    }
+  } catch(e) {
+    console.log('Usando pedidos locales:', e);
+  }
+}
+
 // Cargar precios desde servidor al iniciar
 cargarPrecios().then(() => {
   if (esModoCliente) {
@@ -1065,6 +1103,8 @@ cargarPrecios().then(() => {
     document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
     renderPedidos();
     renderRecetas();
+    // Cargar pedidos del servidor en segundo plano
+    cargarPedidosServidor();
   }
 });
 </script>
