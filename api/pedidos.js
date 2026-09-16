@@ -23,7 +23,11 @@ async function enviarEmail(pedido) {
     const emailDest = process.env.NOTIFICATION_EMAIL || 'migareposteriacali@gmail.com';
     const esCliente = pedido.origen === 'cliente';
     const productos = Array.isArray(pedido.items)
-      ? pedido.items.map(i => i.qty + ' ' + (i.unit||'') + ' ' + (i.label||i.prod)).join('<br>')
+      ? pedido.items.map(i => {
+          const nombre = i.prod || '';
+          const cantidad = i.label || (i.qty + ' ' + (i.unit||'und'));
+          return '<b>' + nombre + '</b> · ' + cantidad;
+        }).join('<br>')
       : '';
     const saldo = (pedido.total||0) - (pedido.abono||0);
 
@@ -99,7 +103,11 @@ module.exports = async function handler(req, res) {
       const pedido = req.body;
       const estadoLabels = ['Pendiente comprar','Hacer de cero','Masa lista','Hecho'];
       const productos = Array.isArray(pedido.items)
-        ? pedido.items.map(i => i.qty+' '+(i.unit||'')+' '+(i.label||i.prod)).join(' | ')
+        ? pedido.items.map(i => {
+            const nombre = i.prod || '';
+            const cantidad = i.label || (i.qty + ' ' + (i.unit||'und'));
+            return nombre + ' · ' + cantidad;
+          }).join(' | ')
         : '';
 
       await sheet.addRow({
